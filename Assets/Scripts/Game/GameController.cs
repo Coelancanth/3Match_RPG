@@ -6,6 +6,9 @@ public class GameController : MonoBehaviour
     private int turnCount = 0; // 当前回合数
     private bool isPlayerTurn = true; // 是否为玩家回合
 
+    private Vector3 dragStart; // 鼠标拖曳起点
+    private Vector3 dragEnd; // 鼠标拖曳终点
+
     void Start()
     {
         StartGame();
@@ -25,75 +28,106 @@ public class GameController : MonoBehaviour
         turnCount++;
         Debug.Log($"Turn {turnCount} begins!");
         isPlayerTurn = true;
-
-        // 可以在这里添加额外的回合初始化逻辑，例如生成新元素或触发特定事件。
     }
 
-    // 更新循环，监听玩家输入
+    // 游戏的主循环：监听输入
     void Update()
     {
-        if (isPlayerTurn && Input.GetMouseButtonDown(0)) // 示例：监听鼠标点击事件
+        if (!isPlayerTurn) return;
+
+        HandleMouseInput(); // 处理鼠标输入
+        HandleKeyboardInput(); // 处理键盘输入
+    }
+
+    // 处理鼠标输入
+    void HandleMouseInput()
+    {
+        // 鼠标点击
+        if (Input.GetMouseButtonDown(0))
         {
-            Vector3 moustPosition = Input.mousePosition;
-            GridCell clickedCell = GetClickedCell(moustPosition);
-            //HandlePlayerAction();
+            Vector3 mousePosition = Input.mousePosition;
+            GridCell clickedCell = GetClickedCell(mousePosition);
+
+            if (clickedCell != null)
+            {
+                Debug.Log($"Mouse Clicked Cell: Row {clickedCell.Row}, Column {clickedCell.Column}");
+                PerformActionOnCell(clickedCell);
+            }
+        }
+
+        // 鼠标拖曳开始
+        if (Input.GetMouseButtonDown(0))
+        {
+            dragStart = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            dragStart.z = 0;
+        }
+
+        // 鼠标拖曳结束
+        if (Input.GetMouseButtonUp(0))
+        {
+            dragEnd = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            dragEnd.z = 0;
+
+            HandleMouseDrag(dragStart, dragEnd);
         }
     }
 
-    // 处理玩家操作
-    void HandlePlayerAction()
+    // 处理键盘输入
+    void HandleKeyboardInput()
     {
-        Debug.Log("Player Action Triggered");
-        // 这里可以实现具体的玩家操作逻辑，例如点击一个网格单元格
-        // 示例：获取鼠标点击位置
-        Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        Debug.Log($"Mouse Position: ({mousePosition.x}, {mousePosition.y})");
-
-        GridCell cell = GetClickedCell(mousePosition);
-
-        if (cell != null)
+        if (Input.GetKeyDown(KeyCode.Space))
         {
-            Debug.Log($"Cell clicked: ({cell.Row}, {cell.Column})");
-            // 对选中的单元格执行操作，例如移动元素或触发技能
-            PerformActionOnCell(cell);
+            Debug.Log("Space key pressed!");
+            EndPlayerTurn();
         }
 
-        // 玩家回合结束
-        EndPlayerTurn();
+        if (Input.GetKeyDown(KeyCode.R))
+        {
+            Debug.Log("R key pressed! Restarting game...");
+            StartGame();
+        }
     }
 
-GridCell GetClickedCell(Vector3 mousePosition)
+    // 处理鼠标拖曳事件
+    void HandleMouseDrag(Vector3 start, Vector3 end)
     {
+        Debug.Log($"Mouse dragged from {start} to {end}");
 
-        // 从屏幕坐标转换为 Ray
+        GridCell startCell = GetClickedCell(start);
+        GridCell endCell = GetClickedCell(end);
+
+        if (startCell != null && endCell != null)
+        {
+            Debug.Log($"Dragged from Cell ({startCell.Row}, {startCell.Column}) to Cell ({endCell.Row}, {endCell.Column})");
+            // 在此处理拖曳逻辑，例如交换两个单元格的内容
+        }
+    }
+
+    // 根据鼠标位置获取单元格
+    GridCell GetClickedCell(Vector3 mousePosition)
+    {
         Ray ray = Camera.main.ScreenPointToRay(mousePosition);
 
-
-        // 发射射线检测
         if (Physics.Raycast(ray, out RaycastHit hit))
         {
             GridCellView cellView = hit.collider.GetComponent<GridCellView>();
             if (cellView != null)
             {
-                Debug.Log($"Hit Cell: Row {cellView.Row}, Column {cellView.Column}");
+                //Debug.Log($"Hit Cell: Row {cellView.Row}, Column {cellView.Column}");
                 return gridManager.GetCell(cellView.Row, cellView.Column);
             }
         }
 
-        Debug.Log("No Cell Hit");
+        //Debug.Log("No Cell Hit");
         return null;
     }
-
-    
-
-
 
     // 对单元格执行操作
     void PerformActionOnCell(GridCell cell)
     {
         if (cell.Element != null)
         {
-            Debug.Log($"Performing action on element: {cell.Element.Type}, Level {cell.Element.Level}");
+            Debug.Log($"Performing action on Element: {cell.Element.Type}, Level {cell.Element.Level}");
             cell.Element.Upgrade(); // 示例：升级元素
         }
     }
@@ -103,8 +137,6 @@ GridCell GetClickedCell(Vector3 mousePosition)
     {
         Debug.Log("Player turn ends!");
         isPlayerTurn = false;
-
-        // 可以在这里添加其他逻辑，例如切换到敌人回合
         EndTurn();
     }
 
