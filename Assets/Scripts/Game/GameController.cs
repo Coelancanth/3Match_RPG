@@ -93,6 +93,11 @@ void HandleKeyboardInput()
         Debug.Log($"Debug Mode: {(isDebugMode ? "ON" : "OFF")}");
     }
 
+    if (Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift)) // 检测 Shift 键
+   {
+        TriggerDebugFunction(); // 调用特定函数
+    }
+
     if (isDebugMode && Input.GetMouseButtonDown(0)) // 调试模式下点击鼠标左键
     {
         Vector3 mousePosition = Input.mousePosition;
@@ -103,6 +108,13 @@ void HandleKeyboardInput()
             ChangeElementInCell(clickedCell);
         }
     }
+}
+
+// 新增函数：调试模式下激发的函数
+void TriggerDebugFunction()
+{
+    Debug.Log("Debug function triggered by Shift key.");
+    // 在此添加具体逻辑
 }
 
 void ChangeElementInCell(GridCell cell)
