@@ -8,6 +8,7 @@ public class GameController : MonoBehaviour
 
     private Vector3 dragStart; // 鼠标拖曳起点
     private Vector3 dragEnd; // 鼠标拖曳终点
+    private bool isDragging = false;
 
     void Start()
     {
@@ -39,38 +40,48 @@ public class GameController : MonoBehaviour
         HandleKeyboardInput(); // 处理键盘输入
     }
 
-    // 处理鼠标输入
-    void HandleMouseInput()
+void HandleMouseInput()
+{
+    // 鼠标按下
+    if (Input.GetMouseButtonDown(0))
     {
-        // 鼠标点击
-        if (Input.GetMouseButtonDown(0))
-        {
-            Vector3 mousePosition = Input.mousePosition;
-            GridCell clickedCell = GetClickedCell(mousePosition);
+        dragStart = Input.mousePosition; // 保持屏幕空间的坐标
+        isDragging = false;
+    }
 
+    // 鼠标拖曳
+    if (Input.GetMouseButton(0))
+    {
+        Vector3 currentPosition = Input.mousePosition;
+        if (Vector3.Distance(dragStart, currentPosition) > 5f) // 拖曳的屏幕像素阈值
+        {
+            isDragging = true;
+        }
+    }
+
+    // 鼠标释放
+    if (Input.GetMouseButtonUp(0))
+    {
+        dragEnd = Input.mousePosition; // 保持屏幕空间的坐标
+
+        if (isDragging)
+        {
+            HandleMouseDrag(dragStart, dragEnd);
+        }
+        else
+        {
+            GridCell clickedCell = GetClickedCell(dragStart);
             if (clickedCell != null)
             {
-                Debug.Log($"Mouse Clicked Cell: Row {clickedCell.Row}, Column {clickedCell.Column}");
                 PerformActionOnCell(clickedCell);
             }
         }
 
-        // 鼠标拖曳开始
-        if (Input.GetMouseButtonDown(0))
-        {
-            dragStart = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            dragStart.z = 0;
-        }
-
-        // 鼠标拖曳结束
-        if (Input.GetMouseButtonUp(0))
-        {
-            dragEnd = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            dragEnd.z = 0;
-
-            HandleMouseDrag(dragStart, dragEnd);
-        }
+        // 重置拖曳标志
+        isDragging = false;
     }
+}
+
 
     // 处理键盘输入
     void HandleKeyboardInput()
@@ -98,29 +109,38 @@ public class GameController : MonoBehaviour
 
         if (startCell != null && endCell != null)
         {
-            Debug.Log($"Dragged from Cell ({startCell.Row}, {startCell.Column}) to Cell ({endCell.Row}, {endCell.Column})");
+            //Debug.Log($"Dragged from Cell ({startCell.Row}, {startCell.Column}) to Cell ({endCell.Row}, {endCell.Column})");
             // 在此处理拖曳逻辑，例如交换两个单元格的内容
         }
     }
 
-    // 根据鼠标位置获取单元格
-    GridCell GetClickedCell(Vector3 mousePosition)
+GridCell GetClickedCell(Vector3 screenPosition)
+{
+    Ray ray = Camera.main.ScreenPointToRay(screenPosition);
+
+    Debug.DrawRay(ray.origin, ray.direction * 100, Color.green, 2f); // 用于调试的射线可视化
+
+    if (Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity))
     {
-        Ray ray = Camera.main.ScreenPointToRay(mousePosition);
-
-        if (Physics.Raycast(ray, out RaycastHit hit))
+        GridCellView cellView = hit.collider.GetComponent<GridCellView>();
+        if (cellView != null)
         {
-            GridCellView cellView = hit.collider.GetComponent<GridCellView>();
-            if (cellView != null)
-            {
-                //Debug.Log($"Hit Cell: Row {cellView.Row}, Column {cellView.Column}");
-                return gridManager.GetCell(cellView.Row, cellView.Column);
-            }
+            //Debug.Log($"Hit Cell: Row {cellView.Row}, Column {cellView.Column}");
+            return gridManager.GetCell(cellView.Row, cellView.Column);
         }
-
-        //Debug.Log("No Cell Hit");
-        return null;
+        else
+        {
+            Debug.Log("Hit object does not have GridCellView component.");
+        }
     }
+    else
+    {
+        Debug.Log("Raycast did not hit any object.");
+    }
+
+    return null;
+}
+
 
     // 对单元格执行操作
     void PerformActionOnCell(GridCell cell)
