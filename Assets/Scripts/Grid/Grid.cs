@@ -1,11 +1,13 @@
 public class Grid
 {
-    public int Rows { get; private set; } = 10;  // 行数
-    public int Columns { get; private set; } = 10;  // 列数
-    public GridCell[,] Cells { get; private set; }  // 存储所有单元格
+    public int Rows { get; private set; }
+    public int Columns { get; private set; }
+    public GridCell[,] Cells { get; private set; }
 
-    public Grid()
+    public Grid(int rows, int columns)
     {
+        Rows = rows;
+        Columns = columns;
         Cells = new GridCell[Rows, Columns];
         for (int row = 0; row < Rows; row++)
         {
@@ -16,7 +18,6 @@ public class Grid
         }
     }
 
-    // 获取某个单元格
     public GridCell GetCell(int row, int column)
     {
         if (row >= 0 && row < Rows && column >= 0 && column < Columns)
@@ -24,19 +25,15 @@ public class Grid
         return null;
     }
 
-    // 设置某个单元格的属性
-    public void SetCellElement(int row, int column, string elementType, int level, string state)
+    public void SetCellElement(int row, int column, Element element)
     {
         GridCell cell = GetCell(row, column);
         if (cell != null)
         {
-            cell.ElementType = elementType;
-            cell.ElementLevel = level;
-            cell.ElementState = state;
+            cell.Element = element;
         }
     }
 
-    // 设置某个单元格的敌人信息
     public void SetCellEnemy(int row, int column, string enemyType, int health)
     {
         GridCell cell = GetCell(row, column);

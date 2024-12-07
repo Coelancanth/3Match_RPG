@@ -17,4 +17,10 @@ public class GridCellView : MonoBehaviour
         Column = column;
         spriteRenderer.color = color;
     }
+
+    public void HighlightCell()
+{
+    spriteRenderer.color = Color.yellow;
+}
+
 }
