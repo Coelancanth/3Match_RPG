@@ -14,4 +14,10 @@ public class GridCell
         EnemyType = null;
         EnemyHealth = 0;
     }
+
+    public bool IsMovable()
+    {
+    return Element != null; // 示例逻辑：有元素时可移动
+    }
+
 }

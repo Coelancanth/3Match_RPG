@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Collections.Generic;
 
 public class GridManager : MonoBehaviour
 {
@@ -73,6 +74,9 @@ public class GridManager : MonoBehaviour
         // 初始化视图
         GridCell cellData = gridData.GetCell(row, column);
         view.Initialize(row, column, DetermineCellColor(cellData));
+
+        view.UpdateElementInfo(cellData);
+
         cell.name = $"Cell_{row}_{column}";
     }
 
@@ -95,4 +99,37 @@ public class GridManager : MonoBehaviour
     {
         return gridData.GetCell(row, column);
     }
+
+
+
+    public List<GridCell> GetMovableRange(GridCell cell, int range = 1)
+    {
+        List<GridCell> movableCells = new List<GridCell>();
+
+        int[][] directions = new int[][]
+        {
+            new int[] { 0, 1 },  // 上
+            new int[] { 0, -1 }, // 下
+            new int[] { 1, 0 },  // 右
+            new int[] { -1, 0 }  // 左
+        };
+
+        foreach (var dir in directions)
+        {
+            int newRow = cell.Row + dir[0];
+            int newCol = cell.Column + dir[1];
+            GridCell neighbor = gridData.GetCell(newRow, newCol);
+
+            if (neighbor != null && neighbor.Element == null) // 示例规则：目标单元格为空
+            {
+                movableCells.Add(neighbor);
+            }
+        }
+
+        return movableCells;
+    }
+
+
+
+
 }
