@@ -34,7 +34,7 @@ public class GameController : MonoBehaviour
     // 游戏的主循环：监听输入
     void Update()
     {
-        if (!isPlayerTurn) return;
+        if (!isPlayerTurn && !isDebugMode) return;
 
         HandleMouseInput(); // 处理鼠标输入
         HandleKeyboardInput(); // 处理键盘输入
@@ -83,21 +83,65 @@ void HandleMouseInput()
 }
 
 
-    // 处理键盘输入
-    void HandleKeyboardInput()
-    {
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            Debug.Log("Space key pressed!");
-            EndPlayerTurn();
-        }
+private bool isDebugMode = false; // 标志是否处于调试模式
 
-        if (Input.GetKeyDown(KeyCode.R))
+void HandleKeyboardInput()
+{
+    if (Input.GetKeyDown(KeyCode.D)) // 按下 D 键进入或退出调试模式
+    {
+        isDebugMode = !isDebugMode;
+        Debug.Log($"Debug Mode: {(isDebugMode ? "ON" : "OFF")}");
+    }
+
+    if (isDebugMode && Input.GetMouseButtonDown(0)) // 调试模式下点击鼠标左键
+    {
+        Vector3 mousePosition = Input.mousePosition;
+        GridCell clickedCell = GetClickedCell(mousePosition);
+
+        if (clickedCell != null)
         {
-            Debug.Log("R key pressed! Restarting game...");
-            StartGame();
+            ChangeElementInCell(clickedCell);
         }
     }
+}
+
+void ChangeElementInCell(GridCell cell)
+{
+    // 示例逻辑：循环更改元素类型
+    string newType;
+    if (cell.Element == null)
+    {
+        newType = "Fire"; // 如果没有元素，初始化为 Fire
+    }
+    else
+    {
+        // 根据当前类型设置下一个类型
+        switch (cell.Element.Type)
+        {
+            case "Fire": newType = "Water"; break;
+            case "Water": newType = "Grass"; break;
+            case "Grass": newType = null; break; // 重置为无元素
+            default: newType = "Fire"; break;
+        }
+    }
+
+    // 更新元素
+    cell.Element = newType != null ? new Element(newType, 1) : null;
+
+    // 更新视图
+    GridCellView cellView = gridManager.GetCellView(cell.Row, cell.Column);
+    if (cellView != null)
+    {
+        cellView.UpdateElementInfo(cell);
+        UpdateCellColor(cellView, cell);
+    }
+
+    Debug.Log($"Changed Element in Cell ({cell.Row}, {cell.Column}) to {newType ?? "None"}");
+}
+
+
+
+
 
 void HandleMouseDrag(Vector3 start, Vector3 end)
 {
