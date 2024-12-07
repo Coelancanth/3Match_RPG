@@ -129,6 +129,12 @@ public class GridManager : MonoBehaviour
         return movableCells;
     }
 
+public GridCellView GetCellView(int row, int column)
+{
+    string cellName = $"Cell_{row}_{column}";
+    Transform cellTransform = transform.Find(cellName);
+    return cellTransform?.GetComponent<GridCellView>();
+}
 
 
 

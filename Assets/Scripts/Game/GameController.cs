@@ -99,26 +99,76 @@ void HandleMouseInput()
         }
     }
 
-    // 处理鼠标拖曳事件
-    void HandleMouseDrag(Vector3 start, Vector3 end)
+void HandleMouseDrag(Vector3 start, Vector3 end)
+{
+    GridCell startCell = GetClickedCell(start);
+    GridCell endCell = GetClickedCell(end);
+
+    if (startCell != null && endCell != null)
     {
-        Debug.Log($"Mouse dragged from {start} to {end}");
-
-        GridCell startCell = GetClickedCell(start);
-        GridCell endCell = GetClickedCell(end);
-
-        if (startCell != null && endCell != null)
+        if (startCell.IsMovable() && endCell.Element == null) // 检查拖曳条件
         {
-            //Debug.Log($"Dragged from Cell ({startCell.Row}, {startCell.Column}) to Cell ({endCell.Row}, {endCell.Column})");
-            // 在此处理拖曳逻辑，例如交换两个单元格的内容
+            // 更新元素交换逻辑
+            Element tempElement = startCell.Element;
+            startCell.Element = endCell.Element;
+            endCell.Element = tempElement;
+
+            // 更新视图
+            GridCellView startCellView = gridManager.GetCellView(startCell.Row, startCell.Column);
+            GridCellView endCellView = gridManager.GetCellView(endCell.Row, endCell.Column);
+
+            // 更新调试信息
+            startCellView.UpdateElementInfo(startCell);
+            endCellView.UpdateElementInfo(endCell);
+
+            // 更新颜色
+            UpdateCellColor(startCellView, startCell);
+            UpdateCellColor(endCellView, endCell);
+
+            //Debug.Log($"Moved Element from Cell ({startCell.Row}, {startCell.Column}) to Cell ({endCell.Row}, {endCell.Column})");
+        }
+        else
+        {
+            //Debug.Log("Invalid drag: Start cell is not movable or end cell is occupied.");
         }
     }
+    else
+    {
+        //Debug.Log("Invalid drag: One or both cells are null.");
+    }
+}
+
+void UpdateCellColor(GridCellView cellView, GridCell cell)
+{
+    SpriteRenderer spriteRenderer = cellView.GetComponentInChildren<SpriteRenderer>();
+    if (cell.Element != null)
+    {
+        spriteRenderer.color = GetColorForElementType(cell.Element.Type);
+    }
+    else
+    {
+        spriteRenderer.color = Color.white; // 无元素时使用默认白色
+    }
+}
+
+Color GetColorForElementType(string elementType)
+{
+    switch (elementType)
+    {
+        case "Fire": return Color.red;
+        case "Water": return Color.blue;
+        case "Grass": return Color.green;
+        default: return Color.gray; // 未知类型使用灰色
+    }
+}
+
+
 
 GridCell GetClickedCell(Vector3 screenPosition)
 {
     Ray ray = Camera.main.ScreenPointToRay(screenPosition);
 
-    Debug.DrawRay(ray.origin, ray.direction * 100, Color.green, 2f); // 用于调试的射线可视化
+    //Debug.DrawRay(ray.origin, ray.direction * 100, Color.green, 2f); // 用于调试的射线可视化
 
     if (Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity))
     {
