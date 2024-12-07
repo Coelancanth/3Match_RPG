@@ -1,0 +1,32 @@
+# Unity Generated Files
+[Ll]ibrary/
+[Tt]emp/
+[Oo]bj/
+[Bb]uild/
+[Bb]uilds/
+[Ll]ogs/
+[Mm]emoryCaptures/
+
+# Unity Crash Reports
+sysinfo.txt
+
+# Exclude cache files
+Assets/**/*.cs.meta
+Assets/**/*.asmdef.meta
+
+# Visual Studio / MonoDevelop project files
+.vscode/
+*.csproj
+*.unityproj
+*.sln
+*.suo
+*.tmp
+*.user
+*.userprefs
+*.pidb
+*.booproj
+*.svd
+
+# OS-specific files
+.DS_Store
+Thumbs.db
