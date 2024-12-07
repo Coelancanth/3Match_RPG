@@ -1,4 +1,5 @@
 using UnityEngine;
+    using System.Collections.Generic;
 
 public class GameController : MonoBehaviour
 {
@@ -93,9 +94,12 @@ void HandleKeyboardInput()
         Debug.Log($"Debug Mode: {(isDebugMode ? "ON" : "OFF")}");
     }
 
-    if (Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift)) // 检测 Shift 键
+    if (Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift) && Input.GetMouseButtonDown(0)) // 检测 Shift 键
    {
-        TriggerDebugFunction(); // 调用特定函数
+       Vector3 mousePosition = Input.mousePosition;
+       GridCell clickedCell = GetClickedCell(mousePosition);
+       DetectMatching(clickedCell);
+        //TriggerDebugFunction(); // 调用特定函数
     }
 
     if (isDebugMode && Input.GetMouseButtonDown(0)) // 调试模式下点击鼠标左键
@@ -272,4 +276,89 @@ GridCell GetClickedCell(Vector3 screenPosition)
         Debug.Log("End of Turn");
         BeginTurn(); // 开始下一回合
     }
+
+
+
+
+void DetectMatching(GridCell triggerCell)
+{
+    int gridWidth = GridConstants.Columns;
+    int gridHeight = GridConstants.Rows;
+
+    // 用于记录访问状态
+    bool[,] visited = new bool[gridWidth, gridHeight];
+    List<GridCell> matchedCells = new List<GridCell>();
+
+    // 遍历整个网格
+    for (int x = 0; x < gridWidth; x++)
+    {
+        for (int y = 0; y < gridHeight; y++)
+        {
+            GridCell currentCell = gridManager.GetCell(y, x); // 行和列的位置
+            if (currentCell?.Element != null && !visited[x, y])
+            {
+                List<GridCell> currentMatch = new List<GridCell>();
+                Element startingElement = currentCell.Element;
+
+                // 执行递归检查
+                CheckAdjacentCells(x, y, startingElement, visited, currentMatch);
+
+                // 如果匹配的数量达到要求（比如3个或以上），添加到结果中
+                if (currentMatch.Count >= 3)
+                {
+                    matchedCells.AddRange(currentMatch);
+                }
+            }
+        }
+    }
+
+    // 处理匹配结果（例如销毁单元格、奖励分数等）
+    if (matchedCells.Count > 0)
+    {
+        HandleMatches(matchedCells, triggerCell);
+    }
+}
+
+// 辅助函数：递归检查相邻单元格
+void CheckAdjacentCells(int x, int y, Element startingElement, bool[,] visited, List<GridCell> currentMatch)
+{
+    // 检查边界
+    if (x < 0 || x >= GridConstants.Columns || y < 0 || y >= GridConstants.Rows || visited[x, y])
+        return;
+
+    GridCell currentCell = gridManager.GetCell(y, x); // 行和列的位置
+    if (currentCell?.Element == null || currentCell.Element.Type != startingElement.Type)
+        return;
+
+    // 标记当前单元格为已访问
+    visited[x, y] = true;
+    currentMatch.Add(currentCell);
+
+    // 检查四个方向
+    CheckAdjacentCells(x + 1, y, startingElement, visited, currentMatch);
+    CheckAdjacentCells(x - 1, y, startingElement, visited, currentMatch);
+    CheckAdjacentCells(x, y + 1, startingElement, visited, currentMatch);
+    CheckAdjacentCells(x, y - 1, startingElement, visited, currentMatch);
+}
+
+// 处理匹配结果
+void HandleMatches(List<GridCell> matchedCells, GridCell triggerCell)
+{
+    foreach (GridCell cell in matchedCells)
+    {
+        // 清除匹配的单元格元素
+        cell.Element = null;
+
+        // 更新视图
+        GridCellView cellView = gridManager.GetCellView(cell.Row, cell.Column);
+        if (cellView != null)
+        {
+            cellView.UpdateElementInfo(cell);
+            cellView.HighlightCell(); // 例如临时高亮
+        }
+    }
+
+    Debug.Log($"Matched {matchedCells.Count} cells starting from Cell ({triggerCell.Row}, {triggerCell.Column})");
+}
+
 }
