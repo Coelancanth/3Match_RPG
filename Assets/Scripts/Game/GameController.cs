@@ -185,6 +185,8 @@ void HandleMouseDrag(Vector3 start, Vector3 end)
             UpdateCellColor(startCellView, startCell);
             UpdateCellColor(endCellView, endCell);
 
+            DetectMatching(endCell);
+
             //Debug.Log($"Moved Element from Cell ({startCell.Row}, {startCell.Column}) to Cell ({endCell.Row}, {endCell.Column})");
         }
         else
@@ -353,12 +355,14 @@ void HandleMatches(List<GridCell> matchedCells, GridCell triggerCell)
         GridCellView cellView = gridManager.GetCellView(cell.Row, cell.Column);
         if (cellView != null)
         {
+            SpriteRenderer spriteRenderer = cellView.GetComponentInChildren<SpriteRenderer>();
+            spriteRenderer.color = Color.white;
             cellView.UpdateElementInfo(cell);
-            cellView.HighlightCell(); // 例如临时高亮
+            //cellView.HighlightCell(); // 例如临时高亮
         }
     }
 
-    Debug.Log($"Matched {matchedCells.Count} cells starting from Cell ({triggerCell.Row}, {triggerCell.Column})");
+    //Debug.Log($"Matched {matchedCells.Count} cells starting from Cell ({triggerCell.Row}, {triggerCell.Column})");
 }
 
 }
