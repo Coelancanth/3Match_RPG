@@ -4,6 +4,7 @@ using UnityEngine;
 public class GameController : MonoBehaviour
 {
     public GridManager gridManager; // 引用网格管理器
+        private MatchingSystem matchingSystem;
     private int turnCount = 0; // 当前回合数
     private bool isPlayerTurn = true; // 是否为玩家回合
 
@@ -21,6 +22,8 @@ public class GameController : MonoBehaviour
             new LevelMatchingRule(),
             new TypeMatchingRule()
         });
+
+        matchingSystem = new MatchingSystem(gridManager, matchingRule);
 
         StartGame();
     }
@@ -291,84 +294,15 @@ GridCell GetClickedCell(Vector3 screenPosition)
 
 
 
-    void DetectMatching(GridCell triggerCell)
+
+
+void DetectMatching(GridCell triggerCell)
     {
-        int gridWidth = GridConstants.Columns;
-        int gridHeight = GridConstants.Rows;
-
-        bool[,] visited = new bool[gridWidth, gridHeight];
-        List<GridCell> matchedCells = new List<GridCell>();
-
-        for (int x = 0; x < gridWidth; x++)
-        {
-            for (int y = 0; y < gridHeight; y++)
-            {
-                GridCell currentCell = gridManager.GetCell(y, x);
-                if (currentCell != null && currentCell.Element != null && !visited[x, y])
-                {
-                    List<GridCell> currentMatch = new List<GridCell>();
-                    CheckAdjacentCells(x, y, visited, currentMatch);
-
-                    if (currentMatch.Count >= 3)
-                    {
-                        matchedCells.AddRange(currentMatch);
-                    }
-                }
-            }
-        }
-
+        var matchedCells = matchingSystem.DetectMatches();
         if (matchedCells.Count > 0)
         {
-            HandleMatches(matchedCells, triggerCell);
+            matchingSystem.HandleMatches(matchedCells);
         }
     }
-
-void CheckAdjacentCells(int x, int y, bool[,] visited, List<GridCell> currentMatch)
-    {
-        if (x < 0 || x >= GridConstants.Columns || y < 0 || y >= GridConstants.Rows || visited[x, y])
-            return;
-
-        GridCell currentCell = gridManager.GetCell(y, x);
-        if (currentCell == null || currentCell.Element == null)
-            return;
-
-        visited[x, y] = true;
-        currentMatch.Add(currentCell);
-
-        foreach (var direction in new[] { (0, 1), (1, 0), (0, -1), (-1, 0) })
-        {
-            int newX = x + direction.Item1;
-            int newY = y + direction.Item2;
-
-            GridCell adjacentCell = gridManager.GetCell(newY, newX);
-            // 修改：使用组合规则进行匹配
-            if (adjacentCell != null && matchingRule.IsMatch(currentCell, adjacentCell))
-            {
-                CheckAdjacentCells(newX, newY, visited, currentMatch);
-            }
-        }
-    }
-
-// 处理匹配结果
-void HandleMatches(List<GridCell> matchedCells, GridCell triggerCell)
-{
-    foreach (GridCell cell in matchedCells)
-    {
-        // 清除匹配的单元格元素
-        cell.Element = null;
-
-        // 更新视图
-        GridCellView cellView = gridManager.GetCellView(cell.Row, cell.Column);
-        if (cellView != null)
-        {
-            SpriteRenderer spriteRenderer = cellView.GetComponentInChildren<SpriteRenderer>();
-            spriteRenderer.color = Color.white;
-            cellView.UpdateElementInfo(cell);
-            cellView.HighlightCell(); // 例如临时高亮
-        }
-    }
-
-    //Debug.Log($"Matched {matchedCells.Count} cells starting from Cell ({triggerCell.Row}, {triggerCell.Column})");
-}
 
 }
