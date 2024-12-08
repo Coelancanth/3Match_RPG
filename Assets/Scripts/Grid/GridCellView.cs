@@ -54,7 +54,7 @@ public class GridCellView : MonoBehaviour
         {
             ElementType = "None";
             ElementLevel = 0;
-            levelText = null;
+            levelText.text = "";
 
             // Set default color (empty or neutral)
             spriteRenderer.color = Color.white;
