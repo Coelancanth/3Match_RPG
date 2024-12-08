@@ -189,7 +189,7 @@ void HandleMouseDrag(Vector3 start, Vector3 end)
             endCell.Element = tempElement;
 
 
-            gridManager.gridData.RandomSpawn(3);
+            //gridManager.gridData.RandomSpawn(3);
             DetectMatching(endCell);
 
             //Debug.Log($"Moved Element from Cell ({startCell.Row}, {startCell.Column}) to Cell ({endCell.Row}, {endCell.Column})");
@@ -272,11 +272,16 @@ GridCell GetClickedCell(Vector3 screenPosition)
 
 void DetectMatching(GridCell triggerCell)
     {
-        var matchedCells = matchingSystem.DetectMatches();
-        if (matchedCells.Count > 0)
+        var machtedGroups = matchingSystem.FindConnectedGroups();
+        foreach (var group in machtedGroups)
         {
-            matchingSystem.HandleMatches(matchedCells);
-        }
+            //Debug.Log($"Element {group[0].Element.Type}, count {group.Count}");
+        //var matchedCells = matchingSystem.DetectMatches();
+        //if (matchedCells.Count > 0)
+        //{
+            //matchingSystem.HandleMatches(matchedCells);
+        //}
     }
 
+}
 }
