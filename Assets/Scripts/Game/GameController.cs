@@ -13,7 +13,8 @@ public class GameController : MonoBehaviour
     private bool isDragging = false;
 
     public IMatchingRule matchingRule;
-    public IMatchResolutionRule resolutionRule;
+    
+    public IMatchResolutionRule matchResolutionRule;
     
 
     void Start()

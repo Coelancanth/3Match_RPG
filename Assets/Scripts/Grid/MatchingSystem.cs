@@ -25,23 +25,26 @@ public List<List<GridCell>> FindConnectedGroups()
             for (int y = 0; y < grid.Columns; y++)
             {
                 if (!visited[x, y] && grid.GetCell(x, y).Element != null)
-                {
+                {   
+                    // first Element
+                    string ElementType = grid.GetCell(x,y).Element.Type;
+                    int    ElementLevel = grid.GetCell(x,y).Element.Level;
                     // If the cell is not visited, perform DFS to find the connected group
                     List<GridCell> connectedGroup = new List<GridCell>();
-                    DFS(x, y, visited, connectedGroup);
+                    DFS(x, y, visited, connectedGroup, ElementType, ElementLevel);
                     connectedGroups.Add(connectedGroup);
                 }
             }
         }
         foreach (var group in connectedGroups)
         {
-            Debug.Log($"Element: {group[0].Element.Type}, Counts: {group.Count}");
+            Debug.Log($"Element: {group[0].Element.Type}, Level: {group[0].Element.Level}, Counts: {group.Count}");
         }
 
         return connectedGroups;
     }
 
-    private void DFS(int x, int y, bool[,] visited, List<GridCell> connectedGroup)
+    private void DFS(int x, int y, bool[,] visited, List<GridCell> connectedGroup, string type, int level)
     {
         Grid grid = gridManager.gridData;
         // If out of bounds or already visited, return
@@ -50,17 +53,20 @@ public List<List<GridCell>> FindConnectedGroups()
 
         GridCell currentCell = grid.GetCell(x, y);
 
-        // If the current cell has an element and is connected, process it
-        if (currentCell.Element != null && !visited[x, y])
+        // If the current cell has an element and is connected and is matched, process it
+        if (currentCell.Element != null 
+            && !visited[x, y] 
+            && currentCell.Element.Type == type
+            && currentCell.Element.Level == level)
         {
             visited[x, y] = true;
             connectedGroup.Add(currentCell);
 
             // Recursively visit all adjacent cells (up, down, left, right)
-            DFS(x + 1, y, visited, connectedGroup); // Right
-            DFS(x - 1, y, visited, connectedGroup); // Left
-            DFS(x, y + 1, visited, connectedGroup); // Down
-            DFS(x, y - 1, visited, connectedGroup); // Up
+            DFS(x + 1, y, visited, connectedGroup, type, level); // Right
+            DFS(x - 1, y, visited, connectedGroup, type, level); // Left
+            DFS(x, y + 1, visited, connectedGroup, type, level); // Down
+            DFS(x, y - 1, visited, connectedGroup, type, level); // Up
         }
     }
 
