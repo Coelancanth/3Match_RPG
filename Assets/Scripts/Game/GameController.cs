@@ -273,24 +273,16 @@ GridCell GetClickedCell(Vector3 screenPosition)
 
 void DetectMatching(GridCell triggerCell)
     {
-        var matchedCells = matchingSystem.DetectMatches();
+        var machtedGroups = matchingSystem.FindConnectedGroups();
+        foreach (var group in machtedGroups)
+        {
+            //Debug.Log($"Element {group[0].Element.Type}, count {group.Count}");
+        //var matchedCells = matchingSystem.DetectMatches();
         //if (matchedCells.Count > 0)
         //{
             //matchingSystem.HandleMatches(matchedCells);
         //}
-        int matchCount = matchedCells.Count;
-        
-        IMatchResolutionRule resolutionRule = MatchResolutionFactory.GetRule(matchCount);
-
-        if (resolutionRule !=null)
-        {
-            resolutionRule.ResolveMatch(matchedCells, triggerCell);
-        }
-
-        else
-        {
-            Debug.Log("No specific rule for this match count");
-        }
     }
 
+}
 }
