@@ -13,6 +13,7 @@ public class GameController : MonoBehaviour
     private bool isDragging = false;
 
     public IMatchingRule matchingRule;
+    public IMatchResolutionRule resolutionRule;
     
 
     void Start()
@@ -189,7 +190,7 @@ void HandleMouseDrag(Vector3 start, Vector3 end)
             endCell.Element = tempElement;
 
 
-            gridManager.gridData.RandomSpawn(3);
+            //gridManager.gridData.RandomSpawn(3);
             DetectMatching(endCell);
 
             //Debug.Log($"Moved Element from Cell ({startCell.Row}, {startCell.Column}) to Cell ({endCell.Row}, {endCell.Column})");
@@ -273,9 +274,22 @@ GridCell GetClickedCell(Vector3 screenPosition)
 void DetectMatching(GridCell triggerCell)
     {
         var matchedCells = matchingSystem.DetectMatches();
-        if (matchedCells.Count > 0)
+        //if (matchedCells.Count > 0)
+        //{
+            //matchingSystem.HandleMatches(matchedCells);
+        //}
+        int matchCount = matchedCells.Count;
+        
+        IMatchResolutionRule resolutionRule = MatchResolutionFactory.GetRule(matchCount);
+
+        if (resolutionRule !=null)
         {
-            matchingSystem.HandleMatches(matchedCells);
+            resolutionRule.ResolveMatch(matchedCells, triggerCell);
+        }
+
+        else
+        {
+            Debug.Log("No specific rule for this match count");
         }
     }
 
