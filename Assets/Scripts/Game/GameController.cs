@@ -12,20 +12,14 @@ public class GameController : MonoBehaviour
     private Vector3 dragEnd; // 鼠标拖曳终点
     private bool isDragging = false;
 
-    public IMatchingRule matchingRule;
     
-    public IMatchResolutionRule matchResolutionRule;
     
 
     void Start()
     {
-        matchingRule = new CompositeMatchingRule(new List<IMatchingRule>
-        {
-            new LevelMatchingRule(),
-            new TypeMatchingRule()
-        });
 
-        matchingSystem = new MatchingSystem(gridManager, matchingRule);
+        matchingSystem = new MatchingSystem(gridManager);
+        
 
         StartGame();
     }
@@ -277,13 +271,25 @@ void DetectMatching(GridCell triggerCell)
         var machtedGroups = matchingSystem.FindConnectedGroups();
         foreach (var group in machtedGroups)
         {
-            //Debug.Log($"Element {group[0].Element.Type}, count {group.Count}");
-        //var matchedCells = matchingSystem.DetectMatches();
-        //if (matchedCells.Count > 0)
-        //{
-            //matchingSystem.HandleMatches(matchedCells);
-        //}
-    }
+            List<List<GridCell>> filteredGroups = new List<List<GridCell>>();
+            if (group.Count >= 3)
+            {
+                filteredGroups.Add(group);
 
-}
+            }
+            foreach (var fGroup in filteredGroups)
+            {
+                //matchResolutionRule.ResolveMatch(fGroup, triggerCell);
+                foreach(var f in fGroup)
+                {
+                    f.Element = null;
+                }
+                
+                //Debug.Log("Filtered Groups:");
+                //Debug.Log($"Element: {group[0].Element.Type}, Level:{group[0].Element.Level}, count: {group.Count}");
+            }
+            
+        }
+
+    }
 }
