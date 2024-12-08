@@ -11,6 +11,6 @@ public class Element
 
     public void Upgrade()
     {
-        Level++;
+        Level +=1;
     }
 }

@@ -1,4 +1,5 @@
 using UnityEngine;
+using TMPro;
 
 public class GridCellView : MonoBehaviour
 {
@@ -10,6 +11,7 @@ public class GridCellView : MonoBehaviour
     public int ElementLevel;   // Element level for debugging
 
     private SpriteRenderer spriteRenderer;
+    public TextMeshPro levelText;
 
     // Color mappings for different element types
     public Color[] typeColors;  // Array of colors for different element types
@@ -39,9 +41,14 @@ public class GridCellView : MonoBehaviour
         {
             ElementType = cell.Element.Type;
             ElementLevel = cell.Element.Level;
-
+            
+            if (levelText != null)
+            {
+                levelText.text = "Level: " + ElementLevel.ToString();
+            }
             // Update the sprite color based on the element's type
             UpdateColor(cell.Element);
+            
         }
         else
         {
