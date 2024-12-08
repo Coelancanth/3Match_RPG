@@ -4,7 +4,7 @@ using UnityEngine;
 public class GameController : MonoBehaviour
 {
     public GridManager gridManager; // 引用网格管理器
-        private MatchingSystem matchingSystem;
+    private MatchingSystem matchingSystem;
     private int turnCount = 0; // 当前回合数
     private bool isPlayerTurn = true; // 是否为玩家回合
 
@@ -86,7 +86,7 @@ void HandleMouseInput()
             GridCell clickedCell = GetClickedCell(dragStart);
             if (clickedCell != null)
             {
-                PerformActionOnCell(clickedCell);
+                //PerformActionOnCell(clickedCell);
             }
         }
 
@@ -178,6 +178,7 @@ void HandleMouseDrag(Vector3 start, Vector3 end)
             endCell.Element = tempElement;
 
 
+            gridManager.gridData.RandomSpawn(3);
             DetectMatching(endCell);
 
             //Debug.Log($"Moved Element from Cell ({startCell.Row}, {startCell.Column}) to Cell ({endCell.Row}, {endCell.Column})");

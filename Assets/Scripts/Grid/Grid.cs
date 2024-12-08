@@ -1,3 +1,6 @@
+using System.Collections.Generic;
+
+using UnityEngine;
 public class Grid
 {
     public int Rows { get; private set; }
@@ -27,6 +30,7 @@ public class Grid
 
     public void SetCellElement(int row, int column, Element element)
     {
+        //Debug.Log("set element");
         GridCell cell = GetCell(row, column);
         if (cell != null)
         {
@@ -43,4 +47,36 @@ public class Grid
             cell.EnemyHealth = health;
         }
     }
+
+    public void RandomSpawn(int number)
+{
+    // 获取所有空白格子
+    List<GridCell> emptyCells = new List<GridCell>();
+    for (int row = 0; row < Rows; row++)
+    {
+        for (int col = 0; col < Columns; col++)
+        {
+            if (Cells[row, col].Element == null) // 空白格子
+            {
+                emptyCells.Add(Cells[row, col]);
+            }
+        }
+    }
+
+    if (emptyCells.Count > 0)
+    {
+        for (int i =0; i < number; i++)
+        {
+            // 随机选择一个空白格子
+            var randomCell = emptyCells[UnityEngine.Random.Range(0, emptyCells.Count)];
+            
+            // 创建一个随机元素类型和level=1的元素
+            Element newElement = new Element("Fire", 1); // 这里可以扩展生成不同类型的元素
+            randomCell.Element = newElement;
+            //SetCellElement(randomCell.Row, randomCell.Column, newElement);
+            
+        }
+    }
+}
+
 }

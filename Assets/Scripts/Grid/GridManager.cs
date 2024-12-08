@@ -5,36 +5,23 @@ public class GridManager : MonoBehaviour
 {
     public GameObject cellPrefab; // 单元格预制体
 
-    private Grid gridData; // 网格数据
+    public Grid gridData; // 网格数据
 
     void Start()
     {
         InitializeGridData();
         GenerateGridVisuals();
-        //InitializeGrid(gridData);
+        gridData.RandomSpawn(5);
     }
-    public GridCellView[,] cellViews;  // Assuming you have a 2D array of GridCellView
 
-    public void InitializeGrid(Grid grid)
-    {
-        for (int row = 0; row < grid.Rows; row++)
-        {
-            for (int col = 0; col < grid.Columns; col++)
-            {
-                GridCell cell = grid.GetCell(row, col);
-                GridCellView cellView = cellViews[row, col];
-                cellView.SubscribeToCell(cell);  // Subscribe the view to the cell
-            }
-        }
-    }
 
     // 初始化网格数据
     public void InitializeGridData()
     {
         gridData = new Grid(GridConstants.Rows, GridConstants.Columns);
         // 设置初始数据，例如元素或敌人
-        gridData.SetCellElement(2, 3, new Element("Fire", 1));
-        gridData.SetCellEnemy(4, 4, "Goblin", 50);
+        //gridData.SetCellElement(0, 0, new Element("Fire", 1));
+        //gridData.SetCellEnemy(4, 4, "Goblin", 50);
     }
 
     // 动态生成可视化单元格
