@@ -12,13 +12,14 @@ public class GameController : MonoBehaviour
     private Vector3 dragEnd; // 鼠标拖曳终点
     private bool isDragging = false;
 
-    
+    private IMatchResolutionRule matchResolutionRule;
     
 
     void Start()
     {
 
         matchingSystem = new MatchingSystem(gridManager);
+        matchResolutionRule = new BasicMatchResolutionRule();
         
 
         StartGame();
@@ -279,11 +280,13 @@ void DetectMatching(GridCell triggerCell)
             }
             foreach (var fGroup in filteredGroups)
             {
+                int groupCount = fGroup.Count;
+                matchResolutionRule.ResolveMatch(fGroup, triggerCell, groupCount);
                 //matchResolutionRule.ResolveMatch(fGroup, triggerCell);
-                foreach(var f in fGroup)
-                {
-                    f.Element = null;
-                }
+                //foreach(var f in fGroup)
+                //{
+                    //f.Element = null;
+                //}
                 
                 //Debug.Log("Filtered Groups:");
                 //Debug.Log($"Element: {group[0].Element.Type}, Level:{group[0].Element.Level}, count: {group.Count}");
