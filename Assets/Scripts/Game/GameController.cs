@@ -124,6 +124,17 @@ void HandleKeyboardInput()
             ChangeElementInCell(clickedCell);
         }
     }
+
+    if (isDebugMode && Input.GetMouseButtonDown(1)) 
+    {
+        Vector3 mousePosition = Input.mousePosition;
+        GridCell clickedCell = GetClickedCell(mousePosition);
+
+        if (clickedCell != null)
+        {
+            PerformActionOnCell(clickedCell);
+        }
+    }
 }
 
 // 新增函数：调试模式下激发的函数
@@ -194,29 +205,7 @@ void HandleMouseDrag(Vector3 start, Vector3 end)
     }
 }
 
-void UpdateCellColor(GridCellView cellView, GridCell cell)
-{
-    SpriteRenderer spriteRenderer = cellView.GetComponentInChildren<SpriteRenderer>();
-    if (cell.Element != null)
-    {
-        spriteRenderer.color = GetColorForElementType(cell.Element.Type);
-    }
-    else
-    {
-        spriteRenderer.color = Color.white; // 无元素时使用默认白色
-    }
-}
 
-Color GetColorForElementType(string elementType)
-{
-    switch (elementType)
-    {
-        case "Fire": return Color.red;
-        case "Water": return Color.blue;
-        case "Grass": return Color.green;
-        default: return Color.gray; // 未知类型使用灰色
-    }
-}
 
 
 
@@ -254,7 +243,10 @@ GridCell GetClickedCell(Vector3 screenPosition)
         if (cell.Element != null)
         {
             Debug.Log($"Performing action on Element: {cell.Element.Type}, Level {cell.Element.Level}");
-            cell.Element.Upgrade(); // 示例：升级元素
+            //cell.Element.Upgrade(); // 示例：升级元素
+            int upgradedLevel = cell.Element.Level+1;
+            cell.Element = new Element(cell.Element.Type, upgradedLevel);
+            
         }
     }
 
