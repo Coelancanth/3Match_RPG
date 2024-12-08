@@ -156,15 +156,7 @@ void ChangeElementInCell(GridCell cell)
     // 更新元素
     cell.Element = newType != null ? new Element(newType, 1) : null;
 
-    // 更新视图
-    GridCellView cellView = gridManager.GetCellView(cell.Row, cell.Column);
-    if (cellView != null)
-    {
-        cellView.UpdateElementInfo(cell);
-        UpdateCellColor(cellView, cell);
-    }
 
-    Debug.Log($"Changed Element in Cell ({cell.Row}, {cell.Column}) to {newType ?? "None"}");
 }
 
 
@@ -185,17 +177,6 @@ void HandleMouseDrag(Vector3 start, Vector3 end)
             startCell.Element = endCell.Element;
             endCell.Element = tempElement;
 
-            // 更新视图
-            GridCellView startCellView = gridManager.GetCellView(startCell.Row, startCell.Column);
-            GridCellView endCellView = gridManager.GetCellView(endCell.Row, endCell.Column);
-
-            // 更新调试信息
-            startCellView.UpdateElementInfo(startCell);
-            endCellView.UpdateElementInfo(endCell);
-
-            // 更新颜色
-            UpdateCellColor(startCellView, startCell);
-            UpdateCellColor(endCellView, endCell);
 
             DetectMatching(endCell);
 

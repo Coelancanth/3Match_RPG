@@ -11,6 +11,21 @@ public class GridManager : MonoBehaviour
     {
         InitializeGridData();
         GenerateGridVisuals();
+        //InitializeGrid(gridData);
+    }
+    public GridCellView[,] cellViews;  // Assuming you have a 2D array of GridCellView
+
+    public void InitializeGrid(Grid grid)
+    {
+        for (int row = 0; row < grid.Rows; row++)
+        {
+            for (int col = 0; col < grid.Columns; col++)
+            {
+                GridCell cell = grid.GetCell(row, col);
+                GridCellView cellView = cellViews[row, col];
+                cellView.SubscribeToCell(cell);  // Subscribe the view to the cell
+            }
+        }
     }
 
     // 初始化网格数据
@@ -65,6 +80,8 @@ public class GridManager : MonoBehaviour
     {
         GameObject cell = Instantiate(cellPrefab, position, Quaternion.identity, transform);
         GridCellView view = cell.GetComponent<GridCellView>();
+        GridCell gridCell = gridData.GetCell(row, column);
+        view.SubscribeToCell(gridCell);
 
         // 调整大小
         Vector3 prefabSize = cell.GetComponent<SpriteRenderer>().bounds.size;
@@ -75,7 +92,6 @@ public class GridManager : MonoBehaviour
         GridCell cellData = gridData.GetCell(row, column);
         view.Initialize(row, column, DetermineCellColor(cellData));
 
-        view.UpdateElementInfo(cellData);
 
         cell.name = $"Cell_{row}_{column}";
     }

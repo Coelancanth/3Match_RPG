@@ -101,6 +101,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1501f64bef1421443a15d587101766d1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ElementType: 
+  ElementLevel: 0
+  elementColors:
+  - {r: 0, g: 0, b: 0, a: 0}
+  - {r: 0.8113208, g: 0.079090886, b: 0.079090886, a: 0}
+  - {r: 0.3773584, g: 0.754717, b: 0.3992053, a: 0}
+  - {r: 0.25394562, g: 0.52051, b: 0.754717, a: 0}
 --- !u!65 &-8614510618990998014
 BoxCollider:
   m_ObjectHideFlags: 0

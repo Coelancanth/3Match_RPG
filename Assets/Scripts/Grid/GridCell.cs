@@ -1,8 +1,25 @@
+using System;
+
 public class GridCell
 {
     public int Row { get; private set; }
     public int Column { get; private set; }
-    public Element Element { get; set; }
+    private Element _element;
+    public Element Element
+    {
+        get {return _element;}
+        set 
+        {
+            if (_element !=value)
+            {
+                _element = value;
+                // Trigger the event when the element changes
+                OnElementChanged?.Invoke(this);
+            }
+        }
+    }
+
+    public event Action<GridCell> OnElementChanged;
     public string EnemyType { get; set; }
     public int EnemyHealth { get; set; }
 

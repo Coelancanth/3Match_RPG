@@ -72,12 +72,12 @@ public class MatchingSystem
         {
             cell.Element = null;
 
-            GridCellView cellView = gridManager.GetCellView(cell.Row, cell.Column);
-            if (cellView != null)
-            {
-                cellView.UpdateElementInfo(cell);
-                cellView.HighlightCell();
-            }
+            //GridCellView cellView = gridManager.GetCellView(cell.Row, cell.Column);
+            //if (cellView != null)
+            //{
+                //cellView.UpdateElementInfo(cell);
+                //cellView.HighlightCell();
+            //}
         }
     }
 }

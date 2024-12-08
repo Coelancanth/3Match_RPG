@@ -11,6 +11,9 @@ public class GridCellView : MonoBehaviour
 
     private SpriteRenderer spriteRenderer;
 
+    // Color mappings for different element types
+    public Color[] typeColors;  // Array of colors for different element types
+
     void Awake()
     {
         spriteRenderer = GetComponentInChildren<SpriteRenderer>();
@@ -25,6 +28,9 @@ public class GridCellView : MonoBehaviour
         // Clear debug info on initialization
         ElementType = "None";
         ElementLevel = 0;
+
+        // Set default color (could be transparent or a default color)
+        spriteRenderer.color = Color.white;
     }
 
     public void UpdateElementInfo(GridCell cell)
@@ -33,16 +39,56 @@ public class GridCellView : MonoBehaviour
         {
             ElementType = cell.Element.Type;
             ElementLevel = cell.Element.Level;
+
+            // Update the sprite color based on the element's type
+            UpdateColor(cell.Element);
         }
         else
         {
             ElementType = "None";
             ElementLevel = 0;
+
+            // Set default color (empty or neutral)
+            spriteRenderer.color = Color.white;
         }
     }
 
-    public void HighlightCell()
+    private void UpdateColor(Element element)
     {
-        spriteRenderer.color = Color.yellow;
+        // Map the element's type to a color
+        switch (element.Type)
+        {
+            case "Fire":
+                spriteRenderer.color = Color.red;
+                break;
+            case "Water":
+                spriteRenderer.color = Color.blue;
+                break;
+            case "Earth":
+                spriteRenderer.color = Color.green;
+                break;
+            case "Grass":
+                spriteRenderer.color = Color.green;
+                break;
+            case "Air":
+                spriteRenderer.color = Color.yellow;
+                break;
+            // Add more types and colors as necessary
+            default:
+                spriteRenderer.color = Color.white;  // Default color
+                break;
+        }
+    }
+
+    // Subscribe to the Element change event
+    public void SubscribeToCell(GridCell cell)
+    {
+        cell.OnElementChanged += HandleElementChanged;
+    }
+
+    // Handle the element change event and update the UI
+    private void HandleElementChanged(GridCell cell)
+    {
+        UpdateElementInfo(cell);  // Update the visual representation when the element changes
     }
 }
