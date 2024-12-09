@@ -267,7 +267,7 @@ GridCell GetClickedCell(Vector3 screenPosition)
 
 
 
-void DetectMatching(GridCell triggerCell)
+public void DetectMatching(GridCell triggerCell)
     {
         var machtedGroups = matchingSystem.FindConnectedGroups();
         foreach (var group in machtedGroups)
