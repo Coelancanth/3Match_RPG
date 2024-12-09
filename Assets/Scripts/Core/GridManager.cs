@@ -7,13 +7,54 @@ public class GridManager : MonoBehaviour
 
     public Grid gridData; // 网格数据
 
+    public DiceManager diceManager;
+
     void Start()
     {
         InitializeGridData();
         GenerateGridVisuals();
-        gridData.RandomSpawn(5);
+        //gridData.RandomSpawn(5);
+        
+        
+        // 初始化骰子管理器并添加初始骰子
+        diceManager = new DiceManager();
+        diceManager.AddDice(new Dice("Fire", 1, new[] { "Fire", "Fire", "Fire", "Fire", "Fire", "Fire" }));
+        diceManager.AddDice(new Dice("Water", 1, new[] { "Water", "Water", "Water", "Water", "Water", "Water" }));
+
+        SpawnDiceGeneratedElements();
     }
 
+    
+    // 使用骰子生成元素
+    public void SpawnDiceGeneratedElements()
+    {
+        List<Element> rolledElements = diceManager.RollAllDice();
+        List<GridCell> emptyCells = GetEmptyCells();
+
+        for (int i = 0; i < rolledElements.Count && i < emptyCells.Count; i++)
+        {
+            emptyCells[i].Element = rolledElements[i];
+        }
+
+    }
+
+    // 获取所有空白格子
+    private List<GridCell> GetEmptyCells()
+    {
+        List<GridCell> emptyCells = new List<GridCell>();
+        for (int row = 0; row < gridData.Rows; row++)
+        {
+            for (int col = 0; col < gridData.Columns; col++)
+            {
+                GridCell cell = gridData.GetCell(row, col);
+                if (cell.Element == null)
+                {
+                    emptyCells.Add(cell);
+                }
+            }
+        }
+        return emptyCells;
+    }
 
     // 初始化网格数据
     public void InitializeGridData()
