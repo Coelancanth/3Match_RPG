@@ -18,8 +18,8 @@ public class GridManager : MonoBehaviour
         
         // 初始化骰子管理器并添加初始骰子
         diceManager = new DiceManager();
-        diceManager.AddDice(new Dice("Fire", 1, new[] { "Fire", "Fire", "Fire", "Fire", "Fire", "Fire" }));
-        diceManager.AddDice(new Dice("Water", 1, new[] { "Water", "Water", "Water", "Water", "Water", "Water" }));
+        //diceManager.AddDice(new Dice("Fire", 1, new[] { "Fire", "Fire", "Fire", "Fire", "Fire", "Fire" }));
+        //diceManager.AddDice(new Dice("Water", 1, new[] { "Water", "Water", "Water", "Water", "Water", "Water" }));
 
         SpawnDiceGeneratedElements();
     }
