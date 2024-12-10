@@ -4,7 +4,8 @@ public class Element
 {
     public string Type { get; private set; }
     public int Level { get; private set; }
-    public String SkillID {get; private set;}
+    public string SkillID { get; private set; }
+    
     public Element(string type, int level, string skillID = null)
     {
         Type = type;

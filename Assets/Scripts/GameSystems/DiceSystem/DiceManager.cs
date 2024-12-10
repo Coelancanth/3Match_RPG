@@ -1,3 +1,4 @@
+
 /// <summary>
 /// Manages all the dice owned by the player and handles dice rolling logic.
 /// </summary>
@@ -14,6 +15,8 @@
 /// </remarks>
 
 using System.Collections.Generic;
+using System.Linq;
+using UnityEngine;
 
 public class DiceManager
 {
@@ -36,8 +39,12 @@ public class DiceManager
         List<Element> results = new List<Element>();
         foreach (var dice in diceCollection)
         {
-            results.Add(dice.RollElement());
+            var face = dice.RollFace();
+
+            results = results.Concat(dice.RollElement(dice.SpawnNumber)).ToList();
+            Debug.Log($"骰子结果 - 面: {face}, 生成元素数量: {dice.SpawnNumber}");
         }
+        Debug.Log($"总共生成元素数量: {results.Count}");
         return results;
     }
 

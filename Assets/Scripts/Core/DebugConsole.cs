@@ -33,6 +33,24 @@ public class DebugConsole : MonoBehaviour
         RegisterCommand("spawn", SpawnElements);
         RegisterCommand("match", TriggerManualMatching);
         RegisterCommand("clear", ClearLog);
+        RegisterCommand("rolldice", (args) => {
+            var results = gridManager.diceManager.RollAllDice();
+            foreach (var element in results)
+            {
+                if (element != null)
+                {
+                    LogOutput($"Rolled: {element.Type} (Level {element.Level})" + 
+                        (element.SkillID != null ? $", Skill: {element.SkillID}" : ""));
+                }
+            }
+            gridManager.SpawnDiceGeneratedElements();
+        });
+        RegisterCommand("cleardice", (args) => {
+            gridManager.diceManager = new DiceManager();
+            LogOutput("Cleared all dice.");
+        });
+        RegisterCommand("adddice", AddTestDice);
+        RegisterCommand("listdice", ListAllDice);
     }
 
     void Update()
@@ -184,6 +202,62 @@ public class DebugConsole : MonoBehaviour
                     gameController.DetectMatching(cell);
                 }
             }
+        }
+    }
+
+    // 添加测试骰子
+    private void AddTestDice(string[] args)
+    {
+        if (gridManager?.diceManager == null)
+        {
+            LogOutput("DiceManager not found.");
+            return;
+        }
+
+        string diceType = args.Length > 0 ? args[0] : "Fire";
+        int level = args.Length > 1 && int.TryParse(args[1], out var l) ? l : 1;
+
+        // 创建测试用的骰子面
+        DiceFace[] faces = new DiceFace[6];
+        for (int i = 0; i < 6; i++)
+        {
+            faces[i] = new DiceFace(new Element(diceType, level, i % 2 == 0 ? $"{diceType.ToLower()}_skill_{i}" : null));
+        }
+
+        // 设置元素权重
+        Dictionary<string, int> supportedElements = new Dictionary<string, int>
+        {
+            { diceType, 70 },
+            { "Normal", 30 }
+        };
+
+        // 创建并添加骰子
+        var dice = new Dice(diceType, level, faces, supportedElements, 3);
+        gridManager.diceManager.AddDice(dice);
+        
+        LogOutput($"Added {diceType} dice (Level {level})");
+    }
+
+    // 列出所有骰子信息
+    private void ListAllDice(string[] args)
+    {
+        if (gridManager?.diceManager == null)
+        {
+            LogOutput("DiceManager not found.");
+            return;
+        }
+
+        var diceInfo = gridManager.diceManager.GetDiceInfo();
+        if (diceInfo.Count == 0)
+        {
+            LogOutput("No dice available.");
+            return;
+        }
+
+        LogOutput("Current Dice:");
+        foreach (var info in diceInfo)
+        {
+            LogOutput(info);
         }
     }
 }

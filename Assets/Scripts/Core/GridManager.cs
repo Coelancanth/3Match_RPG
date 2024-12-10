@@ -3,9 +3,19 @@ using System.Collections.Generic;
 
 public class GridManager : MonoBehaviour
 {
+    [SerializeField] private float cellSpacing = 1.1f; // 替代硬编码的间距
+    [SerializeField] private Color[] elementColors; // 元素颜色配置
+
+    public event System.Action<GridCell> OnCellCreated;
+    public event System.Action<Element> OnElementSpawned;
+
     public GameObject cellPrefab; // 单元格预制体
 
     public Grid gridData; // 网格数据
+
+    
+
+
 
     public DiceManager diceManager;
 
@@ -17,9 +27,7 @@ public class GridManager : MonoBehaviour
         
         
         // 初始化骰子管理器并添加初始骰子
-        diceManager = new DiceManager();
-        //diceManager.AddDice(new Dice("Fire", 1, new[] { "Fire", "Fire", "Fire", "Fire", "Fire", "Fire" }));
-        //diceManager.AddDice(new Dice("Water", 1, new[] { "Water", "Water", "Water", "Water", "Water", "Water" }));
+        InitializeDiceManager();
 
         SpawnDiceGeneratedElements();
     }
@@ -33,9 +41,14 @@ public class GridManager : MonoBehaviour
 
         for (int i = 0; i < rolledElements.Count && i < emptyCells.Count; i++)
         {
-            emptyCells[i].Element = rolledElements[i];
+            if(rolledElements[i] != null)
+            {
+                int randomIndex = Random.Range(0, emptyCells.Count);
+                emptyCells[randomIndex].Element = rolledElements[i];
+                //emptyCells[i].Element = rolledElements[i];
+                OnElementSpawned?.Invoke(rolledElements[i]);
+            }
         }
-
     }
 
     // 获取所有空白格子
@@ -180,6 +193,47 @@ public GridCellView GetCellView(int row, int column)
     return cellTransform?.GetComponent<GridCellView>();
 }
 
+    private void InitializeDiceManager()
+    {
+        diceManager = new DiceManager();
+        // 从配置文件加载初始骰子
+        var initialDice = LoadInitialDice();
+        foreach(var dice in initialDice)
+        {
+            diceManager.AddDice(dice);
+        }
+    }
 
+    private Element CreateRandomElement()
+    {
+        string[] elementTypes = new[] { "Fire", "Water", "Earth", "Air" };
+        string randomType = elementTypes[Random.Range(0, elementTypes.Length)];
+        return new Element(randomType, 1);
+    }
 
+    public bool IsGridFull()
+    {
+        return GetEmptyCells().Count == 0;
+    }
+
+    public void ClearGrid()
+    {
+        for (int row = 0; row < gridData.Rows; row++)
+        {
+            for (int col = 0; col < gridData.Columns; col++)
+            {
+                gridData.SetCellElement(row, col, null);
+            }
+        }
+    }
+
+    private List<Dice> LoadInitialDice()
+    {
+        List<Dice> initialDice = new List<Dice>();
+        
+        // 添加一个1级火焰骰子
+        //initialDice.Add(Dice.CreateFireDice(1));
+        
+        return initialDice;
+    }
 }
