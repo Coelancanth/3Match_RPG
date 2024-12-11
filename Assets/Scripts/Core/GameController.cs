@@ -1,5 +1,6 @@
 using UnityEngine;
-    using System.Collections.Generic;
+using System.Collections.Generic;
+using System.Linq;
 
 public class GameController : MonoBehaviour
 {
@@ -268,18 +269,81 @@ GridCell GetClickedCell(Vector3 screenPosition)
 
 
 public void DetectMatching(GridCell triggerCell)
+{
+    if (triggerCell?.Element == null) return;
+
+    var matchedGroups = matchingSystem.FindConnectedGroups();
+    var adjacentConnectedGroups = matchingSystem.GetAdjacentConnectedGroups(triggerCell);
+    
+    // 筛选符合条件的相邻连通组
+    var filteredGroups = FilterAdjacentGroups(triggerCell, adjacentConnectedGroups);
+    
+    foreach (var group in filteredGroups)
     {
-        var machtedGroups = matchingSystem.FindConnectedGroups();
-        //foreach (var group in machtedGroups)
-        //{
-            //matchResolutionRule.ResolveMatch(group, triggerCell);
-        //}
-        var adjacentConnectedGroups = matchingSystem.GetAdjacentConnectedGroups(triggerCell);
-        foreach (var group in adjacentConnectedGroups)
+        Debug.Log($"筛选后的联通组 - 类型：{group.ElementType}，数量：{group.Count}，总和：{group.Sum}");
+        //matchResolutionRule.ResolveMatch(group.Group, triggerCell);
+    }
+}
+
+// 定义一个结构来存储筛选后的组信息
+private struct FilteredGroup
+{
+    public List<GridCell> Group;
+    public string ElementType;
+    public int Count;
+    public int Sum;
+}
+
+private List<FilteredGroup> FilterAdjacentGroups(GridCell triggerCell, List<List<GridCell>> adjacentGroups)
+{
+    var filteredGroups = new List<FilteredGroup>();
+    int triggerValue = triggerCell.Element.Value;
+    string triggerType = triggerCell.Element.Type;
+
+    foreach (var group in adjacentGroups)
+    {
+        if (group.Count == 0 || group[0].Element == null) continue;
+
+        string groupType = group[0].Element.Type;
+        int groupSum = group.Sum(cell => cell.Element?.Value ?? 0);
+
+        // 根据不同的元素类型组合和数值关系进行筛选
+        bool shouldInclude = false;
+
+        // 示例筛选规则：
+        // 1. 如果触发元素是火，且相邻组是水，则组内元素总和需要小于触发元素值
+        if (triggerType == "Fire" && groupType == "Water" && groupSum < triggerValue)
         {
-            Debug.Log($"相邻联通组类型：{group[0].Element.Type}， 相邻联通组数量：{group.Count}");
-            //matchResolutionRule.ResolveMatch(group, triggerCell);
+            shouldInclude = true;
+        }
+        // 2. 如果触发元素是水，且相邻组是草，则组内元素总和需要大于触发元素值
+        else if (triggerType == "Water" && groupType == "Grass" && groupSum > triggerValue)
+        {
+            shouldInclude = true;
+        }
+        // 3. 如果触发元素是草，且相邻组是火，则组内元素数量需要大于3
+        else if (triggerType == "Grass" && groupType == "Fire" && group.Count > 3)
+        {
+            shouldInclude = true;
+        }
+        // 4. 如果触发元素和相邻组元素类型相同，则组内元素总和需要等于触发元素值
+        else if (triggerType == groupType && groupSum == triggerValue)
+        {
+            shouldInclude = true;
         }
 
+        if (shouldInclude)
+        {
+            filteredGroups.Add(new FilteredGroup
+            {
+                Group = group,
+                ElementType = groupType,
+                Count = group.Count,
+                Sum = groupSum
+            });
+        }
     }
+
+    return filteredGroups;
+}
 }
