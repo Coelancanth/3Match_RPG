@@ -1,14 +1,17 @@
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using UnityEngine;
-
+using System.Linq;
+using System;
 public class MatchingSystem
 {
     private readonly GridManager gridManager;
+    private List<MatchingRule> matchingRules;
 
     public MatchingSystem(GridManager gridManager)
     {
         this.gridManager = gridManager;
+        this.matchingRules = MatchingRuleConfig.GetDefaultRules();
     }
 
     public List<List<GridCell>> FindConnectedGroups()
@@ -114,11 +117,74 @@ public class MatchingSystem
         return adjacentGroups;
     }
 
-    public void HandleMatches(List<GridCell> matchedCells)
+    public class FilteredGroup
     {
-        foreach (GridCell cell in matchedCells)
-        {
-            cell.Element = null;
-        }
+        public List<GridCell> Group;
+        public string ElementType;
+        public int Count;
+        public int Sum;
     }
+
+    public List<FilteredGroup> FilterAdjacentGroups(GridCell triggerCell, List<List<GridCell>> adjacentGroups)
+    {
+        // 空值检查
+        if (triggerCell?.Element == null || adjacentGroups == null)
+        {
+            Debug.LogWarning("FilterAdjacentGroups: triggerCell or adjacentGroups is null");
+            return new List<FilteredGroup>();
+        }
+
+        var filteredGroups = new List<FilteredGroup>();
+        int triggerValue = triggerCell.Element.Value;
+        string triggerType = triggerCell.Element.Type;
+
+        foreach (var group in adjacentGroups)
+        {
+            // 检查组是否为空或没有元素
+            if (group == null || group.Count == 0 || group[0]?.Element == null)
+            {
+                continue;
+            }
+
+            try
+            {
+                string groupType = group[0].Element.Type;
+                // 使用 Where 过滤掉空元素，然后计算总和
+                int groupSum = group
+                    .Where(cell => cell?.Element != null)
+                    .Sum(cell => cell.Element.Value);
+
+                // 检查所有规则
+                bool shouldInclude = false;
+                foreach (var rule in matchingRules)
+                {
+                    if (rule != null && rule.Evaluate(triggerType, groupType, triggerValue, groupSum, group.Count))
+                    {
+                        shouldInclude = true;
+                        Debug.Log($"规则匹配：{rule.Description}");
+                        break;
+                    }
+                }
+
+                if (shouldInclude)
+                {
+                    filteredGroups.Add(new FilteredGroup
+                    {
+                        Group = group,
+                        ElementType = groupType,
+                        Count = group.Count,
+                        Sum = groupSum
+                    });
+                }
+            }
+            catch (Exception e)
+            {
+                Debug.LogError($"处理组时发生错误: {e.Message}\n{e.StackTrace}");
+                continue;
+            }
+        }
+
+        return filteredGroups;
+    }
+
 }
