@@ -26,10 +26,10 @@ public List<List<GridCell>> FindConnectedGroups()
                 {   
                     // first Element
                     string ElementType = grid.GetCell(x,y).Element.Type;
-                    int    ElementLevel = grid.GetCell(x,y).Element.Level;
+                    //int    ElementLevel = grid.GetCell(x,y).Element.Level;
                     // If the cell is not visited, perform DFS to find the connected group
                     List<GridCell> connectedGroup = new List<GridCell>();
-                    DFS(x, y, visited, connectedGroup, ElementType, ElementLevel);
+                    DFS(x, y, visited, connectedGroup, ElementType);
                     connectedGroups.Add(connectedGroup);
                 }
             }
@@ -42,7 +42,7 @@ public List<List<GridCell>> FindConnectedGroups()
         return connectedGroups;
     }
 
-    private void DFS(int x, int y, bool[,] visited, List<GridCell> connectedGroup, string type, int level)
+    private void DFS(int x, int y, bool[,] visited, List<GridCell> connectedGroup, string type)
     {
         Grid grid = gridManager.gridData;
         // If out of bounds or already visited, return
@@ -54,17 +54,16 @@ public List<List<GridCell>> FindConnectedGroups()
         // If the current cell has an element and is connected and is matched, process it
         if (currentCell.Element != null 
             && !visited[x, y] 
-            && currentCell.Element.Type == type
-            && currentCell.Element.Level == level)
+            && currentCell.Element.Type == type)
         {
             visited[x, y] = true;
             connectedGroup.Add(currentCell);
 
             // Recursively visit all adjacent cells (up, down, left, right)
-            DFS(x + 1, y, visited, connectedGroup, type, level); // Right
-            DFS(x - 1, y, visited, connectedGroup, type, level); // Left
-            DFS(x, y + 1, visited, connectedGroup, type, level); // Down
-            DFS(x, y - 1, visited, connectedGroup, type, level); // Up
+            DFS(x + 1, y, visited, connectedGroup, type); // Right
+            DFS(x - 1, y, visited, connectedGroup, type); // Left
+            DFS(x, y + 1, visited, connectedGroup, type); // Down
+            DFS(x, y - 1, visited, connectedGroup, type); // Up
         }
     }
 

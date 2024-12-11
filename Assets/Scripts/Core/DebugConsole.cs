@@ -39,8 +39,7 @@ public class DebugConsole : MonoBehaviour
             {
                 if (element != null)
                 {
-                    LogOutput($"Rolled: {element.Type} (Level {element.Level})" + 
-                        (element.SkillID != null ? $", Skill: {element.SkillID}" : ""));
+                    LogOutput($"Rolled: {element.Type} (Value{element.Value})");
                 }
             }
             gridManager.SpawnDiceGeneratedElements();
@@ -51,6 +50,8 @@ public class DebugConsole : MonoBehaviour
         });
         RegisterCommand("adddice", AddTestDice);
         RegisterCommand("listdice", ListAllDice);
+        RegisterCommand("reloaddiceconfig", ReloadDiceConfig);
+        RegisterCommand("debug",DebugMode);
     }
 
     void Update()
@@ -69,6 +70,12 @@ public class DebugConsole : MonoBehaviour
         {
             inputField.ActivateInputField(); // 激活输入框
         }
+    }
+    
+    private void DebugMode(string[] args)
+    {
+        gameController.isDebugMode = !gameController.isDebugMode;
+        LogOutput($"Debug Mode: {(gameController.isDebugMode ? "ON" : "OFF")}");
     }
 
     public void OnSubmitCommand(string command)
@@ -158,7 +165,7 @@ public class DebugConsole : MonoBehaviour
                 var cell = gridManager.GetCell(row, col);
                 if (cell.Element != null)
                 {
-                    LogOutput($"Cell[{row},{col}]: {cell.Element.Type}, Level {cell.Element.Level}");
+                    LogOutput($"Cell[{row},{col}]: {cell.Element.Type}, Value {cell.Element.Value}");
                 }
                 else
                 {
@@ -221,7 +228,7 @@ public class DebugConsole : MonoBehaviour
         DiceFace[] faces = new DiceFace[6];
         for (int i = 0; i < 6; i++)
         {
-            faces[i] = new DiceFace(new Element(diceType, level, i % 2 == 0 ? $"{diceType.ToLower()}_skill_{i}" : null));
+            faces[i] = new DiceFace(new Element(diceType, level));
         }
 
         // 设置元素权重
@@ -259,5 +266,57 @@ public class DebugConsole : MonoBehaviour
         {
             LogOutput(info);
         }
+    }
+
+
+    private void ReloadDiceConfig(string[] args)
+    {
+        // 这里需要实现配置重载逻辑
+        LogOutput("Reloading dice configuration...");
+        // gridManager.diceManager.ReloadConfig();
+        LogOutput("Dice configuration reloaded");
+    }
+
+    private void TestSkill(string[] args)
+    {
+        if (args.Length < 1)
+        {
+            LogOutput("请指定技能ID");
+            return;
+        }
+
+        string skillID = args[0];
+        
+        // 创建测试骰子
+        var testDice = CreateTestDice();
+        var testFace = testDice.Faces[0]; // 获取第一面
+        
+        // 在鼠标位置或中心位置生成元素
+        var centerPos = new Vector2Int(GridConstants.Rows/2, GridConstants.Columns/2);
+        var cell = gridManager.GetCell(centerPos.x, centerPos.y);
+        
+    }
+
+    private Dice CreateTestDice()
+    {
+        // 创建一个测试骰子，每个面都带有不同的技能
+        DiceFace[] faces = new DiceFace[6]
+        {
+            new DiceFace(new Element("Fire", 1)),                   // 普通元素
+            new DiceFace(new Element("Fire", 1)),                   // 普通元素
+            new DiceFace(new Element("Fire", 1)),                   // 普通元素
+            new DiceFace(new Element("Fire", 1)),                   // 普通元素
+            new DiceFace(new Element("Fire", 1)),                   // 普通元素
+            new DiceFace(new Element("Water", 1))                   // 普通元素
+        };
+
+        Dictionary<string, int> elementWeights = new Dictionary<string, int>
+        {
+            { "Fire", 40 },
+            { "Water", 30 },
+            { "Earth", 30 }
+        };
+
+        return new Dice("TestDice", 1, faces, elementWeights, 3);
     }
 }

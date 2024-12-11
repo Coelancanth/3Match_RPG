@@ -1,44 +1,51 @@
 using System.Collections.Generic;
 public interface IMatchResolutionRule
 {
-    void ResolveMatch(List<GridCell> matchedGroup, GridCell triggerCell, int groupCount);
+    void ResolveMatch(List<GridCell> matchedGroup, GridCell triggerCell);
 }
 
 public class BasicMatchResolutionRule : IMatchResolutionRule
 {
-    public void ResolveMatch(List<GridCell> matchedGroup, GridCell triggerCell, int groupCount)
+    public void ResolveMatch(List<GridCell> matchedGroup, GridCell triggerCell)
     {
-        if (groupCount == 3)
+        int groupValueSum = 0;
+        foreach(var cell in matchedGroup)
         {
-            // 执行3个匹配的逻辑，例如消除
-            Eliminate(matchedGroup);
+            groupValueSum += cell.Element.Value;;
         }
-        else if (groupCount >= 4)
-        {
-            // TODO To be extended
-            EliminateAllAndUpgradeTrigger(matchedGroup, triggerCell);
+        //if (groupValueSum == 3)
+        //{
+            //// 执行3个匹配的逻辑，例如消除
+            //EliminateAll(matchedGroup);
+        //}
+        //else if (groupValueSum >= 4)
+        //{
+            //// TODO To be extended
+            //EliminateAndIncrease(matchedGroup, triggerCell);
 
-            
-        }
+            //
+        //}
     }
     
-    private void EliminateAllAndUpgradeTrigger(List<GridCell> matchedGroup, GridCell triggerCell)
+    private void EliminateAndIncrease(List<GridCell> matchedGroup, GridCell triggerCell)
     {
-        foreach (var cell in matchedGroup)
+        EliminateExceptTrigger(matchedGroup, triggerCell);
+        triggerCell.Element = UpgradeValue(triggerCell.Element);
+    }
+
+
+    private void EliminateExceptTrigger(List<GridCell> matchedGroup, GridCell triggerCell)
+    {
+        foreach(var cell in matchedGroup)
         {
-            if(cell.Element != triggerCell.Element)
+            if(cell != triggerCell)
             {
-                cell.Element = null; // 消除元素
-            }
-            else
-            {
-                triggerCell.Element = Upgrade(triggerCell.Element);
+                cell.Element = null;
             }
         }
     }
-    
 
-    private void Eliminate(List<GridCell> matchedGroup)
+    private void EliminateAll(List<GridCell> matchedGroup)
     {
         foreach (var cell in matchedGroup)
         {
@@ -46,11 +53,11 @@ public class BasicMatchResolutionRule : IMatchResolutionRule
         }
     }
     
-    private Element Upgrade(Element element)
+    private Element UpgradeValue(Element element)
     {
-        int level = element.Level;
+        int value = element.Value;
         string type = element.Type;
-        return new Element(type, level+1);
+        return new Element(type,value+1);
     }
 
     private void DoubleScore(List<GridCell> matchedGroup)

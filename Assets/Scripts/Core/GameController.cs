@@ -93,15 +93,15 @@ void HandleMouseInput()
 }
 
 
-private bool isDebugMode = false; // 标志是否处于调试模式
+public bool isDebugMode = false; // 标志是否处于调试模式
 
 void HandleKeyboardInput()
 {
-    if (Input.GetKeyDown(KeyCode.D)) // 按下 D 键进入或退出调试模式
-    {
-        isDebugMode = !isDebugMode;
-        Debug.Log($"Debug Mode: {(isDebugMode ? "ON" : "OFF")}");
-    }
+    //if (Input.GetKeyDown(KeyCode.D)) // 按下 D 键进入或退出调试模式
+    //{
+        //isDebugMode = !isDebugMode;
+        //Debug.Log($"Debug Mode: {(isDebugMode ? "ON" : "OFF")}");
+    //}
 
     if (Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift) && Input.GetMouseButtonDown(0)) // 检测 Shift 键
    {
@@ -239,10 +239,10 @@ GridCell GetClickedCell(Vector3 screenPosition)
     {
         if (cell.Element != null)
         {
-            Debug.Log($"Performing action on Element: {cell.Element.Type}, Level {cell.Element.Level}");
+            Debug.Log($"Performing action on Element: {cell.Element.Type}, Level {cell.Element.Value}");
             //cell.Element.Upgrade(); // 示例：升级元素
-            int upgradedLevel = cell.Element.Level+1;
-            cell.Element = new Element(cell.Element.Type, upgradedLevel);
+            int upgradedValue = cell.Element.Value+1;
+            cell.Element = new Element(cell.Element.Type, upgradedValue);
             
         }
     }
@@ -272,26 +272,7 @@ public void DetectMatching(GridCell triggerCell)
         var machtedGroups = matchingSystem.FindConnectedGroups();
         foreach (var group in machtedGroups)
         {
-            List<List<GridCell>> filteredGroups = new List<List<GridCell>>();
-            if (group.Count >= 3)
-            {
-                filteredGroups.Add(group);
-
-            }
-            foreach (var fGroup in filteredGroups)
-            {
-                int groupCount = fGroup.Count;
-                matchResolutionRule.ResolveMatch(fGroup, triggerCell, groupCount);
-                //matchResolutionRule.ResolveMatch(fGroup, triggerCell);
-                //foreach(var f in fGroup)
-                //{
-                    //f.Element = null;
-                //}
-                
-                //Debug.Log("Filtered Groups:");
-                //Debug.Log($"Element: {group[0].Element.Type}, Level:{group[0].Element.Level}, count: {group.Count}");
-            }
-            
+            matchResolutionRule.ResolveMatch(group, triggerCell);
         }
 
     }

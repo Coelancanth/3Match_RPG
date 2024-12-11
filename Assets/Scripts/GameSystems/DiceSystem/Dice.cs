@@ -39,7 +39,7 @@ public class Dice
     {
         int randomIndex = UnityEngine.Random.Range(0, Faces.Length);
         Element rolledElement = Faces[randomIndex].Element;
-        Debug.Log($"骰子投掷结果 - 类型: {Type}, 等级: {Level}, 面: {randomIndex + 1}, 元素: {rolledElement.Type}, 技能: {rolledElement.SkillID ?? "无"}");
+        Debug.Log($"骰子投掷结果 - 类型: {Type}, 数值: {Level}, 面: {randomIndex + 1}, 元素: {rolledElement.Type}");
         return rolledElement;
     }
 
@@ -138,50 +138,50 @@ public Element[] RollElement(int spawnNumber)
     /// <param name="faceIndex">要增强的面的索引（0-5）</param>
     /// <param name="enhanceType">增强类型</param>
     /// <returns>增强是否成功</returns>
-    public bool EnhanceFace(int faceIndex, EnhanceType enhanceType)
-    {
-        if (faceIndex < 0 || faceIndex >= Faces.Length)
-            return false;
+    //public bool EnhanceFace(int faceIndex, EnhanceType enhanceType)
+    //{
+        //if (faceIndex < 0 || faceIndex >= Faces.Length)
+            //return false;
 
-        var face = Faces[faceIndex];
-        
-        switch (enhanceType)
-        {
-            case EnhanceType.LevelUp:
-                Faces[faceIndex] = new DiceFace(
-                    new Element(
-                        face.Element.Type,
-                        face.Element.Level + 1,
-                        face.Element.SkillID
-                    )
-                );
-                break;
+        //var face = Faces[faceIndex];
+        //
+        //switch (enhanceType)
+        //{
+            //case EnhanceType.LevelUp:
+                //Faces[faceIndex] = new DiceFace(
+                    //new Element(
+                        //face.Element.Type,
+                        //face.Element.Level + 1,
+                        //face.Element.SkillID
+                    //)
+                //);
+                //break;
 
-            case EnhanceType.AddSkill:
-                string newSkillID = GetRandomSkillForType(face.Element.Type);
-                Faces[faceIndex] = new DiceFace(
-                    new Element(
-                        face.Element.Type,
-                        face.Element.Level,
-                        newSkillID
-                    )
-                );
-                break;
+            //case EnhanceType.AddSkill:
+                //string newSkillID = GetRandomSkillForType(face.Element.Type);
+                //Faces[faceIndex] = new DiceFace(
+                    //new Element(
+                        //face.Element.Type,
+                        //face.Element.Level,
+                        //newSkillID
+                    //)
+                //);
+                //break;
 
-            case EnhanceType.Both:
-                newSkillID = GetRandomSkillForType(face.Element.Type);
-                Faces[faceIndex] = new DiceFace(
-                    new Element(
-                        face.Element.Type,
-                        face.Element.Level + 1,
-                        newSkillID
-                    )
-                );
-                break;
-        }
+            //case EnhanceType.Both:
+                //newSkillID = GetRandomSkillForType(face.Element.Type);
+                //Faces[faceIndex] = new DiceFace(
+                    //new Element(
+                        //face.Element.Type,
+                        //face.Element.Level + 1,
+                        //newSkillID
+                    //)
+                //);
+                //break;
+        //}
 
-        return true;
-    }
+        //return true;
+    //}
 
     // 增强类型枚举
     public enum EnhanceType

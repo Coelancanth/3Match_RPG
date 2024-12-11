@@ -8,7 +8,7 @@ public class GridCellView : MonoBehaviour
 
     [Header("Debug Info")]
     public string ElementType; // Element type for debugging
-    public int ElementLevel;   // Element level for debugging
+    public int ElementValue;   // Element level for debugging
 
     private SpriteRenderer spriteRenderer;
     public TextMeshPro levelText;
@@ -29,7 +29,7 @@ public class GridCellView : MonoBehaviour
 
         // Clear debug info on initialization
         ElementType = "None";
-        ElementLevel = 0;
+        ElementValue = 0;
 
         // Set default color (could be transparent or a default color)
         spriteRenderer.color = Color.white;
@@ -40,11 +40,11 @@ public class GridCellView : MonoBehaviour
         if (cell.Element != null)
         {
             ElementType = cell.Element.Type;
-            ElementLevel = cell.Element.Level;
+            ElementValue = cell.Element.Value;
             
             if (levelText != null)
             {
-                levelText.text = "Level: " + ElementLevel.ToString();
+                levelText.text = "Level: " + ElementValue.ToString();
             }
             // Update the sprite color based on the element's type
             UpdateColor(cell.Element);
@@ -53,7 +53,7 @@ public class GridCellView : MonoBehaviour
         else
         {
             ElementType = "None";
-            ElementLevel = 0;
+            ElementValue = 0;
             levelText.text = "";
 
             // Set default color (empty or neutral)

@@ -10,9 +10,13 @@ public class DiceFace
         IsFrozen = false;
     }
     
-    public DiceFace(string type, int level, string skillID)
+    public static DiceFace CreateSpecialFace(string type, int value, int level, string skillID)
     {
-        Element = new Element(type, level, skillID);
-        IsFrozen = false;
+        return new DiceFace(new ActiveSpecialElement(type, value, level, skillID));
+    }
+    
+    public static DiceFace CreatePassiveFace(string type, int value, int level, PassiveEffect effect)
+    {
+        return new DiceFace(new PassiveSpecialElement(type, value, level, effect));
     }
 } 
