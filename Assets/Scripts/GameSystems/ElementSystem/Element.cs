@@ -12,11 +12,6 @@ public class Element
         Type = type;
         Value = value;
     }
-
-    public virtual void OnMatch() 
-    {
-        // 基础元素匹配效果
-    }
 }
 
 // 特殊元素基类
@@ -38,53 +33,54 @@ public class SpecialElement : Element
 // 主动特殊元素
 public class ActiveSpecialElement : SpecialElement
 {
-    public string SkillID { get; private set; }
+    public string EffectID { get; private set; }
 
-    public ActiveSpecialElement(string type, int value, int level, string skillID) 
+    public ActiveSpecialElement(string type, int value, int level, string effectID) 
         : base(type, value, level)
     {
-        SkillID = skillID;
+        EffectID = effectID;
     }
 
-    public void TriggerSkill()
+    public void TriggerEffect()
     {
         // 触发主动技能
-        Debug.Log($"Triggering active skill: {SkillID}");
+        Debug.Log($"Triggering active effect: {EffectID}");
     }
-
-    public override void OnMatch()
+    
+    public bool IsTriggered()
     {
-        base.OnMatch();
-        TriggerSkill();
+        TriggerEffect();
+        return true;
+    }
+    
+    public bool Trigger()
+    {
+        TriggerEffect();
+        return true;
     }
 }
 
 // 被动特殊元素
 public class PassiveSpecialElement : SpecialElement
 {
-    public PassiveEffect PassiveEffect { get; private set; }
+    public string EffectID { get; private set; }
 
-    public PassiveSpecialElement(string type, int value, int level, PassiveEffect effect)
+    public PassiveSpecialElement(string type, int value, int level, string effectID)
         : base(type, value, level)
     {
-        PassiveEffect = effect;
+        EffectID = effectID;
     }
 
-    public override void OnMatch()
+    public void TriggerEffect()
     {
-        base.OnMatch();
-        ApplyPassiveEffect();
+
     }
 
-    private void ApplyPassiveEffect()
+    public bool IsTriggered()
     {
-        // 应用被动效果
-        PassiveEffect.Apply();
+        TriggerEffect();
+        return true;
     }
+
 }
 
-// 被动效果基类
-public abstract class PassiveEffect
-{
-    public abstract void Apply();
-}
