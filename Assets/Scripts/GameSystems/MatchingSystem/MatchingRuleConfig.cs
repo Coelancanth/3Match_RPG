@@ -9,7 +9,7 @@ public static class MatchingRuleConfig
         {
             // 基础元素互相作用规则
             CreateRule("Fire", "Water", (trigger, sum, count) => 
-                sum < trigger, "火对水：组合总和小于触发值"),
+                sum >=1, "【触发元素】：火，【组元素】：水，【规则】：组合总和大于等于1"),
                 
             CreateRule("Water", "Grass", (trigger, sum, count) => 
                 sum > trigger, "水对草：组合总和大于触发值"),
@@ -19,7 +19,7 @@ public static class MatchingRuleConfig
                 
             // 同类元素规则
             CreateRule("Fire", "Fire", (trigger, sum, count) => 
-                sum >= 3, "【触发】：火，【组】：火，【规则】：组合总和大于等于3"),
+                sum >= 3, "【触发元素】：火，【组元素】：火，【规则】：组合总和大于等于3"),
                 
             CreateRule("Water", "Water", (trigger, sum, count) => 
                 sum == trigger, "水对水：组合总和等于触发值"),

@@ -3,6 +3,14 @@ using System.Text.RegularExpressions;
 using UnityEngine;
 using System.Linq;
 using System;
+
+public class FilteredGroup
+{
+    public List<GridCell> Group;
+    public string ElementType;
+    public int Count;
+    public int Sum;
+}
 public class MatchingSystem
 {
     private readonly GridManager gridManager;
@@ -117,13 +125,6 @@ public class MatchingSystem
         return adjacentGroups;
     }
 
-    public class FilteredGroup
-    {
-        public List<GridCell> Group;
-        public string ElementType;
-        public int Count;
-        public int Sum;
-    }
 
     public List<FilteredGroup> FilterAdjacentGroups(GridCell triggerCell, List<List<GridCell>> adjacentGroups)
     {

@@ -1,30 +1,15 @@
 using System.Collections.Generic;
+
 public interface IMatchResolutionRule
 {
-    void ResolveMatch(List<GridCell> matchedGroup, GridCell triggerCell);
+    void ResolveMatch(List<FilteredGroup> matchedGroup, GridCell triggerCell);
 }
 
 public class BasicMatchResolutionRule : IMatchResolutionRule
 {
-    public void ResolveMatch(List<GridCell> matchedGroup, GridCell triggerCell)
+    public void ResolveMatch(List<FilteredGroup> matchedGroup, GridCell triggerCell)
     {
-        int groupValueSum = 0;
-        foreach(var cell in matchedGroup)
-        {
-            groupValueSum += cell.Element.Value;;
-        }
-        //if (groupValueSum == 3)
-        //{
-            //// 执行3个匹配的逻辑，例如消除
-            //EliminateAll(matchedGroup);
-        //}
-        //else if (groupValueSum >= 4)
-        //{
-            //// TODO To be extended
-            //EliminateAndIncrease(matchedGroup, triggerCell);
-
-            //
-        //}
+        return;
     }
     
     private void EliminateAndIncrease(List<GridCell> matchedGroup, GridCell triggerCell)

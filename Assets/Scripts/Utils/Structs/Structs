@@ -1,0 +1,15 @@
+using System.Collections.Generic;
+
+namespace Structs
+{
+    public struct FilteredGroup
+    {
+        public List<GridCell> Group;
+        public string ElementType;
+        public int Count;
+        public int Sum;
+    }
+
+    // 其他数据结构也可以放在这里
+    // public struct OtherStruct { ... }
+}

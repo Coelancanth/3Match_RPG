@@ -277,11 +277,12 @@ public void DetectMatching(GridCell triggerCell)
     // 筛选符合条件的相邻连通组
     var filteredGroups = matchingSystem.FilterAdjacentGroups(triggerCell, adjacentConnectedGroups);
     
-    foreach (var group in filteredGroups)
-    {
-        Debug.Log($"筛选后的联通组 - 类型：{group.ElementType}，数量：{group.Count}，总和：{group.Sum}");
-        //matchResolutionRule.ResolveMatch(group.Group, triggerCell);
-    }
+    matchResolutionRule.ResolveMatch(filteredGroups, triggerCell);
+    //foreach (var group in filteredGroups)
+    //{
+        //Debug.Log($"筛选后的联通组 - 类型：{group.ElementType}，数量：{group.Count}，总和：{group.Sum}");
+        ////matchResolutionRule.ResolveMatch(group.Group, triggerCell);
+    //}
 }
 
 
