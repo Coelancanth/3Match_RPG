@@ -10,8 +10,8 @@ public class MatchingSystem
     {
         this.gridManager = gridManager;
     }
-    
-public List<List<GridCell>> FindConnectedGroups()
+
+    public List<List<GridCell>> FindConnectedGroups()
     {
         Grid grid = gridManager.gridData;
         List<List<GridCell>> connectedGroups = new List<List<GridCell>>();
@@ -67,7 +67,52 @@ public List<List<GridCell>> FindConnectedGroups()
         }
     }
 
+    public List<List<GridCell>> GetAdjacentConnectedGroups(GridCell targetCell)
+    {
+        Grid grid = gridManager.gridData;
+        List<List<GridCell>> adjacentGroups = new List<List<GridCell>>();
+        bool[,] visited = new bool[grid.Rows, grid.Columns];
 
+        // 获取目标格子的坐标
+        int targetX = targetCell.Row;
+        int targetY = targetCell.Column;
+
+        // 检查四个相邻方向
+        Vector2Int[] directions = new Vector2Int[]
+        {
+            new Vector2Int(1, 0),  // 右
+            new Vector2Int(-1, 0), // 左
+            new Vector2Int(0, 1),  // 上
+            new Vector2Int(0, -1)  // 下
+        };
+
+        foreach (var dir in directions)
+        {
+            int newX = targetX + dir.x;
+            int newY = targetY + dir.y;
+
+            // 检查边界
+            if (newX < 0 || newY < 0 || newX >= grid.Rows || newY >= grid.Columns)
+                continue;
+
+            GridCell adjacentCell = grid.GetCell(newX, newY);
+            
+            // 如果相邻格子有元素且未被访问过
+            if (adjacentCell.Element != null && !visited[newX, newY])
+            {
+                List<GridCell> connectedGroup = new List<GridCell>();
+                DFS(newX, newY, visited, connectedGroup, adjacentCell.Element.Type);
+                
+                // 只有当连通组不为空时才添加
+                if (connectedGroup.Count > 0)
+                {
+                    adjacentGroups.Add(connectedGroup);
+                }
+            }
+        }
+
+        return adjacentGroups;
+    }
 
     public void HandleMatches(List<GridCell> matchedCells)
     {

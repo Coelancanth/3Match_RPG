@@ -270,9 +270,15 @@ GridCell GetClickedCell(Vector3 screenPosition)
 public void DetectMatching(GridCell triggerCell)
     {
         var machtedGroups = matchingSystem.FindConnectedGroups();
-        foreach (var group in machtedGroups)
+        //foreach (var group in machtedGroups)
+        //{
+            //matchResolutionRule.ResolveMatch(group, triggerCell);
+        //}
+        var adjacentConnectedGroups = matchingSystem.GetAdjacentConnectedGroups(triggerCell);
+        foreach (var group in adjacentConnectedGroups)
         {
-            matchResolutionRule.ResolveMatch(group, triggerCell);
+            Debug.Log($"相邻联通组类型：{group[0].Element.Type}， 相邻联通组数量：{group.Count}");
+            //matchResolutionRule.ResolveMatch(group, triggerCell);
         }
 
     }

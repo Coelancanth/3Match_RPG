@@ -34,11 +34,13 @@ public class SpecialElement : Element
 public class ActiveSpecialElement : SpecialElement
 {
     public string EffectID { get; private set; }
+    public int ReachRange { get; private set; }
 
-    public ActiveSpecialElement(string type, int value, int level, string effectID) 
+    public ActiveSpecialElement(string type, int value, int level, string effectID, int reachRange) 
         : base(type, value, level)
     {
         EffectID = effectID;
+        ReachRange = reachRange;
     }
 
     public void TriggerEffect()
@@ -53,11 +55,6 @@ public class ActiveSpecialElement : SpecialElement
         return true;
     }
     
-    public bool Trigger()
-    {
-        TriggerEffect();
-        return true;
-    }
 }
 
 // 被动特殊元素

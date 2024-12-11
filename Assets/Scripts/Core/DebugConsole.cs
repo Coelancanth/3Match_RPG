@@ -165,7 +165,7 @@ public class DebugConsole : MonoBehaviour
                 var cell = gridManager.GetCell(row, col);
                 if (cell.Element != null)
                 {
-                    LogOutput($"Cell[{row},{col}]: {cell.Element.Type}, Value {cell.Element.Value}");
+                    //LogOutput($"Cell[{row},{col}]: {cell.Element.Type}, Value {cell.Element.Value}");
                 }
                 else
                 {
