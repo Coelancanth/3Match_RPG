@@ -104,8 +104,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ElementType: 
   ElementValue: 0
+  elementVisualConfig: {fileID: 11400000, guid: a1bb431a3abc052459bc9f8af497f0e7, type: 2}
+  elementSpriteRenderer: {fileID: 3225770310295170590}
   levelText: {fileID: 2976902220359225888}
-  typeColors: []
 --- !u!65 &-8614510618990998014
 BoxCollider:
   m_ObjectHideFlags: 0

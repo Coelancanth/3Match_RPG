@@ -11,30 +11,10 @@ public class GridCellView : MonoBehaviour
     public string ElementType; // Element type for debugging
     public int ElementValue;   // Element level for debugging
 
-    private SpriteRenderer spriteRenderer;
+    [SerializeField] private ElementVisualConfig elementVisualConfig;
+    [SerializeField] private SpriteRenderer elementSpriteRenderer;
+
     public TextMeshPro levelText;
-
-    // Color mappings for different element types
-    public Color[] typeColors;  // Array of colors for different element types
-
-    void Awake()
-    {
-        spriteRenderer = GetComponentInChildren<SpriteRenderer>();
-    }
-
-    public void Initialize(int row, int column, Color color)
-    {
-        Row = row;
-        Column = column;
-        spriteRenderer.color = color;
-
-        // Clear debug info on initialization
-        ElementType = "None";
-        ElementValue = 0;
-
-        // Set default color (could be transparent or a default color)
-        spriteRenderer.color = Color.white;
-    }
 
     private Coroutine textDisplayCoroutine;
     public void UpdateElementInfo(GridCell cell)
@@ -48,9 +28,7 @@ public class GridCellView : MonoBehaviour
             {
                 levelText.text = $"{{Row: {Row}, Column: {Column}\nType: {ElementType}, Value: {ElementValue}}}";
             }
-            // Update the sprite color based on the element's type
-            UpdateColor(cell.Element);
-            
+            UpdateVisuals(cell.Element);
         }
         else
         {
@@ -61,35 +39,29 @@ public class GridCellView : MonoBehaviour
                 StopCoroutine(textDisplayCoroutine);
             textDisplayCoroutine = StartCoroutine(ShowTextTemporarily($"{{Row: {Row}, Column: {Column}\n Empty", 3.0f));
 
-            // Set default color (empty or neutral)
-            spriteRenderer.color = Color.white;
+            UpdateVisuals(null);
         }
     }
 
-    private void UpdateColor(Element element)
+    private void UpdateVisuals(Element element)
     {
-        // Map the element's type to a color
-        switch (element.Type)
+        if (element == null)
         {
-            case "Fire":
-                spriteRenderer.color = Color.red;
-                break;
-            case "Water":
-                spriteRenderer.color = Color.blue;
-                break;
-            case "Earth":
-                spriteRenderer.color = Color.green;
-                break;
-            case "Grass":
-                spriteRenderer.color = Color.green;
-                break;
-            case "Air":
-                spriteRenderer.color = Color.yellow;
-                break;
-            // Add more types and colors as necessary
-            default:
-                spriteRenderer.color = Color.white;  // Default color
-                break;
+            elementSpriteRenderer.sprite = null;
+            elementSpriteRenderer.color = Color.white;
+            return;
+        }
+
+        var visualData = elementVisualConfig.GetVisualData(element.Type);
+        if (visualData != null)
+        {
+            elementSpriteRenderer.sprite = visualData.sprite;
+            elementSpriteRenderer.color = visualData.color;
+        }
+        else
+        {
+            elementSpriteRenderer.sprite = null;
+            elementSpriteRenderer.color = Color.white;
         }
     }
 
@@ -110,5 +82,14 @@ public class GridCellView : MonoBehaviour
         levelText.text = text;
         yield return new WaitForSeconds(duration);
         levelText.text = "";
+    }
+
+    public void Initialize(int row, int column, Color color)
+    {
+        Row = row;
+        Column = column;
+        ElementType = "None";
+        ElementValue = 0;
+        elementSpriteRenderer.color = color;
     }
 }
