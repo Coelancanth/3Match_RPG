@@ -5,12 +5,14 @@ public class FireballEffect : Effect
 {
     private readonly int range;
     private readonly int baseDamage;
+    private readonly int fireElementBoost = 1;  // 火元素增强值
+    private readonly int waterElementReduction = 1;  // 水元素削弱值
 
     public FireballEffect() : base(
         "effect_fireball",
         "火球术",
-        "对目标位置造成伤害，并对周围造成溅射伤害",
-        EffectType.Damage,
+        "增强范围内的火元素，削弱范围内的水元素",
+        EffectType.ElementChange,
         EffectTriggerType.OnEliminate)
     {
         range = 2;
@@ -20,13 +22,14 @@ public class FireballEffect : Effect
     public override List<GridCell> GetAffectedCells(EffectContext context)
     {
         var affectedCells = new List<GridCell>();
-        var sourcePos = context.SourceCell.Position;
+        var sourcePosRow = context.SourceCell.Row;
+        var sourcePosColumn = context.SourceCell.Column;
         var grid = context.GridManager.gridData;
 
         // 获取范围内的所有格子
-        for (int x = sourcePos.Row - range; x <= sourcePos.Row + range; x++)
+        for (int x = sourcePosRow - range; x <= sourcePosRow + range; x++)
         {
-            for (int y = sourcePos.Column - range; y <= sourcePos.Column + range; y++)
+            for (int y = sourcePosColumn - range; y <= sourcePosColumn + range; y++)
             {
                 if (grid.IsValidPosition(x, y))
                 {
@@ -46,43 +49,58 @@ public class FireballEffect : Effect
         {
             if (cell.Element == null) continue;
 
-            // 计算伤害
-            int damage = CalculateDamage(context.SourceCell, cell);
-            
-            // 应用效果
-            ApplyDamage(cell, damage);
-            
-            // 检查元素相互作用
-            CheckElementInteraction(cell);
+            // 根据元素类型应用不同效果
+            ApplyElementEffect(cell);
         }
     }
 
-    private int CalculateDamage(GridCell source, GridCell target)
+    private void ApplyElementEffect(GridCell cell)
     {
-        int distance = Mathf.Abs(source.Position.Row - target.Position.Row) + 
-                      Mathf.Abs(source.Position.Column - target.Position.Column);
-        
-        float multiplier = distance == 0 ? 1f : 0.5f;
-        
-        // 如果目标是火元素，伤害加倍
-        if (target.Element?.Type == "Fire")
+        if (cell.Element == null) return;
+
+        switch (cell.Element.Type)
         {
-            multiplier *= 2f;
+            case "Fire":
+                // 增强火元素
+                BoostFireElement(cell);
+                break;
+            case "Water":
+                // 削弱水元素
+                WeakenWaterElement(cell);
+                break;
+            default:
+                // 其他元素类型不受影响
+                break;
         }
+    }
+
+    private void BoostFireElement(GridCell cell)
+    {
+        int newValue = cell.Element.Value + fireElementBoost;
+        Debug.Log($"火元素增强：({cell.Row}, {cell.Column}) {cell.Element.Value} -> {newValue}");
+        cell.Element = new Element("Fire", newValue);
+    }
+
+    private void WeakenWaterElement(GridCell cell)
+    {
+        int newValue = Mathf.Max(1, cell.Element.Value - waterElementReduction); // 确保不会低于1
+        Debug.Log($"水元素削弱：({cell.Row}, {cell.Column}) {cell.Element.Value} -> {newValue}");
         
-        return Mathf.RoundToInt(baseDamage * multiplier);
+        if (newValue <= 1)
+        {
+            // 如果削弱到1以下，直接消除
+            cell.Element = null;
+            Debug.Log($"水元素被消除：({cell.Row}, {cell.Column})");
+        }
+        else
+        {
+            cell.Element = new Element("Water", newValue);
+        }
     }
 
-    private void ApplyDamage(GridCell cell, int damage)
+    private int CalculateDistance(GridCell source, GridCell target)
     {
-        // 这里可以添加伤害效果的视觉反馈
-        Debug.Log($"对位置({cell.Position.Row}, {cell.Position.Column})造成{damage}点伤害");
-        cell.Element = null;
+        return Mathf.Abs(source.Row - target.Row) + 
+               Mathf.Abs(source.Column - target.Column);
     }
-
-    private void CheckElementInteraction(GridCell cell)
-    {
-        // 这里可以添加元素相互作用的逻辑
-        // 比如火+水=蒸汽等
-    }
-} 
+}

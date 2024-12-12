@@ -78,5 +78,9 @@ public class Grid
         }
     }
 }
+public bool IsValidPosition(int row, int column)
+{
+    return row >= 0 && row < Rows && column >= 0 && column < Columns;
+}
 
 }

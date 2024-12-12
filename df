@@ -1,0 +1,37 @@
+[33m2720dba[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mfeature/Effect[m[33m)[m WIP: Basic effect system implemented.
+[33m912e254[m[33m ([m[1;31morigin/master[m[33m, [m[1;32mmaster[m[33m, [m[1;32mfeature/GroupRule[m[33m)[m feat(matching): 优化元素匹配规则系统
+[33maab4a98[m feat(matching): 优化元素匹配规则系统
+[33me0d9fc9[m WIP: 这个实现主要做了以下几点改动： 添加了一个 FilteredGroup 结构来存储筛选后的组信息，包括： 原始组的单元格列表 元素类型 组内元素数量 组内元素值的总和 新增了 FilterAdjacentGroups 方法来处理筛选逻辑，其中包含了几个示例筛选规则： 火元素对水元素的规则 水元素对草元素的规则 草元素对火元素的规则 相同元素类型之间的规则 修改了 DetectMatching 方法，使用新的筛选逻辑，并输出筛选后的结果 你可以根据具体的游戏设计需求，在 FilterAdjacentGroups 方法中修改或添加更多的筛选规则。每个规则可以基于： 触发元素的类型和数值 相邻组的元素类型 相邻组的元素数量 相邻组内元素值的总和 这样的设计让你可以灵活地定义各种元素之间的交互规则。
+[33m1fd3e1d[m WIP: now is able to detect adjacent connected groups
+[33mc21d3ae[m WIP: Element System Refactoring
+[33m1907956[m feat: Refactored Element System, added Match Resolution Rule
+[33m28ad2d1[m feat: 添加骰子配置系统
+[33m47ef911[m WIP: - Rearrgened Folder Structure - Refactored Dice, to make it more extensiable.
+[33mad024d0[m[33m ([m[1;32mfeature/DiceSystem[m[33m)[m - Rearranged Scripts Folder - Implemented basic dice system
+[33mc627d42[m[33m ([m[1;31morigin/feature/DebugConsole[m[33m, [m[1;32mfeature/DebugConsole[m[33m)[m WIP: basic DebugConsole implemented; TODO: Add Scrollbar
+[33m8137d9e[m[33m ([m[1;32mfeature/implementResolutionRules[m[33m)[m Feature Implemented
+[33mf4451c3[m[33m ([m[1;31morigin/feature/implementResolutionRules[m[33m)[m WIP: more concrete rules to be implemented;
+[33meeee73e[m Clean Code Deleted Interfaces, will try to implement them again later.
+[33m111d59d[m Matching Algorithm (find connected groups by by level/element) should work fine now.
+[33m3be4b83[m Merge branch 'bugfix/fixMatchingAlgorithm'
+[33mcea396c[m Merge branch 'feature/handleMoreMatchCases'
+[33mb336bf6[m[33m ([m[1;32mbugfix/fixMatchingAlgorithm[m[33m)[m new algorithm (floodFill) implemented,     now should be able to detect connected groups.
+[33mbafa642[m WIP: saveing progress on bugfix
+[33m7b2becb[m[33m ([m[1;32mfeature/handleMoreMatchCases[m[33m)[m Add ResolutionRules for handling resolutions.
+[33m31fd66e[m[33m ([m[1;32mfeature/DebugPanel[m[33m)[m Merge branch 'feature/displayLevel'
+[33m29fdd14[m[33m ([m[1;32mfeature/displayLevel[m[33m)[m Add more debug-friendly features (levelText etc.)
+[33m22be719[m Add random spawn functionality to generate new grid cells
+[33m318adf9[m Modified GridCellView to update the SpriteRenderer color based on the Element.Type instead of using sprite-based mappings. Introduced a switch statement in the UpdateColor method to map different Element.Type values (e.g., "Fire", "Water", "Earth", "Air") to corresponding colors. Removed the need for sprite mappings, simplifying the visual update logic to use color only. Updated GridCellView to automatically adjust the sprite color whenever the Element changes in the corresponding GridCell.
+[33meb383a6[m Refactoring, use matchingSystem instead.
+[33m1c6a6e5[m - Introduced CompositeMatchingRule to combine multiple IMatchingRule implementations. - Updated GameController to initialize matchingRule with CompositeMatchingRule, combining LevelMatchingRule and TypeMatchingRule. - Modified CheckAdjacentCells to use the composite rule for determining matches. - Enhanced flexibility to support multiple matching criteria and dynamic rule combinations.
+[33mc314ef2[m Update HandleMatches to include SpriteRenderer updates for cleared cells. Add temporary highlight effect for matched cells.
+[33m5fde12c[m Basic 3-Matching implemented,
+[33m3887b72[m Add debug feature: Shift key now triggers a specific debug function. Updated HandleKeyboardInput and introduced TriggerDebugFunction for modular logic.
+[33m614f245[m feat: add debug mode to modify grid cell elements with mouse input
+[33m4218c5d[m feat: implement drag-and-drop functionality with color updates
+[33m4f3f649[m seperate drag and click logic
+[33mb74b965[m some tweaks
+[33mddb5242[m refactor: enhance GameController with mouse and keyboard input handling
+[33m85677ed[m gameManager added
+[33mea612d0[m now the generated gird fit the screen size
+[33mf35e896[m init
