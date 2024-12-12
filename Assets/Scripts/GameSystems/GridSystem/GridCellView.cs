@@ -1,5 +1,6 @@
 using UnityEngine;
 using TMPro;
+using System.Collections;
 
 public class GridCellView : MonoBehaviour
 {
@@ -35,6 +36,7 @@ public class GridCellView : MonoBehaviour
         spriteRenderer.color = Color.white;
     }
 
+    private Coroutine textDisplayCoroutine;
     public void UpdateElementInfo(GridCell cell)
     {
         if (cell.Element != null)
@@ -44,7 +46,7 @@ public class GridCellView : MonoBehaviour
             
             if (levelText != null)
             {
-                levelText.text = "Level: " + ElementValue.ToString();
+                levelText.text = $"{{Row: {Row}, Column: {Column}\nType: {ElementType}, Value: {ElementValue}}}";
             }
             // Update the sprite color based on the element's type
             UpdateColor(cell.Element);
@@ -54,7 +56,10 @@ public class GridCellView : MonoBehaviour
         {
             ElementType = "None";
             ElementValue = 0;
-            levelText.text = "";
+            
+            if (textDisplayCoroutine != null)
+                StopCoroutine(textDisplayCoroutine);
+            textDisplayCoroutine = StartCoroutine(ShowTextTemporarily($"{{Row: {Row}, Column: {Column}\n Empty", 3.0f));
 
             // Set default color (empty or neutral)
             spriteRenderer.color = Color.white;
@@ -98,5 +103,12 @@ public class GridCellView : MonoBehaviour
     private void HandleElementChanged(GridCell cell)
     {
         UpdateElementInfo(cell);  // Update the visual representation when the element changes
+    }
+    
+    private IEnumerator ShowTextTemporarily(string text, float duration)
+    {
+        levelText.text = text;
+        yield return new WaitForSeconds(duration);
+        levelText.text = "";
     }
 }
