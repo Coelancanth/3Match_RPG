@@ -12,7 +12,8 @@ public class GridCellView : MonoBehaviour
     public int ElementValue;   // Element level for debugging
 
     [SerializeField] private ElementVisualConfig elementVisualConfig;
-    [SerializeField] private SpriteRenderer elementSpriteRenderer;
+    [SerializeField] private SpriteRenderer gridSpriteRenderer;    // 网格背景的渲染器
+    [SerializeField] private SpriteRenderer elementSpriteRenderer; // 元素的渲染器
 
     public TextMeshPro levelText;
 
@@ -35,9 +36,11 @@ public class GridCellView : MonoBehaviour
             ElementType = "None";
             ElementValue = 0;
             
-            if (textDisplayCoroutine != null)
-                StopCoroutine(textDisplayCoroutine);
-            textDisplayCoroutine = StartCoroutine(ShowTextTemporarily($"{{Row: {Row}, Column: {Column}\n Empty", 3.0f));
+            //if (textDisplayCoroutine != null)
+                //StopCoroutine(textDisplayCoroutine);
+            //textDisplayCoroutine = StartCoroutine(ShowTextTemporarily($"{{Row: {Row}, Column: {Column}\n Empty", 3.0f));
+            levelText.text = "";
+            
 
             UpdateVisuals(null);
         }
@@ -90,6 +93,7 @@ public class GridCellView : MonoBehaviour
         Column = column;
         ElementType = "None";
         ElementValue = 0;
-        elementSpriteRenderer.color = color;
+        gridSpriteRenderer.color = color;  // 设置网格背景颜色
+        elementSpriteRenderer.color = Color.white;  // 重置元素颜色
     }
 }
