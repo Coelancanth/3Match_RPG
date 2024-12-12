@@ -152,7 +152,7 @@ public class GridManager : MonoBehaviour
         return Color.white;
     }
 
-        public GridCell GetCell(int row, int column)
+    public GridCell GetCell(int row, int column)
     {
         return gridData.GetCell(row, column);
     }

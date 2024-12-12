@@ -10,37 +10,37 @@ public class BasicMatchResolutionRule : IMatchResolutionRule
 {
     public void ResolveMatch(List<FilteredGroup> matchedGroups, GridCell triggerCell)
     {
-        foreach (var group in matchedGroups)
-        {
-            // 先检查是否有特殊元素需要触发效果
-            foreach (var cell in group.Group)
-            {
-                if (cell.Element is ActiveSpecialElement activeElement)
-                {
-                    var context = new EffectContext
-                    {
-                        GridManager = GameObject.FindAnyObjectByType<GridManager>(),
-                        SourceCell = cell,
-                        SourceElement = cell.Element
-                    };
-                    
-                    // 通过EffectManager触发效果
-                    EffectManager.Instance.QueueEffect(activeElement.EffectID, context);
-                }
-            }
+        //foreach (var group in matchedGroups)
+        //{
+            //// 先检查是否有特殊元素需要触发效果
+            //foreach (var cell in group.Group)
+            //{
+                //if (cell.Element is ActiveSpecialElement activeElement)
+                //{
+                    //var context = new EffectContext
+                    //{
+                        //GridManager = GameObject.FindAnyObjectByType<GridManager>(),
+                        //SourceCell = cell,
+                        //SourceElement = cell.Element
+                    //};
+                    //
+                    //// 通过EffectManager触发效果
+                    //EffectManager.Instance.QueueEffect(activeElement.EffectID, context);
+                //}
+            //}
 
-            // 然后执行常规的消除
-            EliminateExceptTrigger(group.Group, triggerCell);
-        }
-        
-        // 处理所有排队的效果
-        EffectManager.Instance.ProcessEffectQueue();
-        
-        // 最后升级触发元素，可能升级为特殊元素
-        if (triggerCell.Element != null)
-        {
-            triggerCell.Element = UpgradeElement(triggerCell.Element);
-        }
+            //// 然后执行常规的消除
+            //EliminateExceptTrigger(group.Group, triggerCell);
+        //}
+        //
+        //// 处理所有排队的效果
+        //EffectManager.Instance.ProcessEffectQueue();
+        //
+        //// 最后升级触发元素，可能升级为特殊元素
+        //if (triggerCell.Element != null)
+        //{
+            //triggerCell.Element = UpgradeElement(triggerCell.Element);
+        //}
     }
 
     private Element UpgradeElement(Element element)
@@ -53,7 +53,7 @@ public class BasicMatchResolutionRule : IMatchResolutionRule
             {
                 case "Fire":
                     return new ActiveSpecialElement(
-                        "Fire",
+                        "Fireball",
                         element.Value + 1,
                         1,  // 初始等级
                         "effect_fireball",  // 效果ID

@@ -132,6 +132,12 @@ void HandleKeyboardInput()
             PerformActionOnCell(clickedCell);
         }
     }
+
+    // 按 T 键触发测试
+    if (Input.GetKeyDown(KeyCode.T))
+    {
+        TestFireballEffect();
+    }
 }
 
 // 新增函数：调试模式下激发的函数
@@ -234,13 +240,13 @@ GridCell GetClickedCell(Vector3 screenPosition)
 }
 
 
-    // 对单元格执行操作
+    // 对单��格执行操作
     void PerformActionOnCell(GridCell cell)
     {
         if (cell.Element != null)
         {
             Debug.Log($"Performing action on Element: {cell.Element.Type}, Level {cell.Element.Value}");
-            //cell.Element.Upgrade(); // 示例：升��元素
+            //cell.Element.Upgrade(); // 示例：升级元素
             int upgradedValue = cell.Element.Value+1;
             cell.Element = new Element(cell.Element.Type, upgradedValue);
             
@@ -292,5 +298,53 @@ private void InitializeMatchingRules()
     matchingRules = MatchingRuleConfig.GetDefaultRules();
 }
 
+// 在 GameController 中添加测试方法
+public void TestFireballEffect()
+{
+    // 1. 创建测试布局
+    CreateTestLayout();
+    
+    // 2. 获取中心位置的格子（1,1）并触发匹配
+    //var centerCell = gridManager.GetCell(1, 1);
+    //DetectMatching(centerCell);
+}
+
+private void CreateTestLayout()
+{
+    // 清空网格
+    //gridManager.InitializeGridData();
+    
+    // 创建测试布局
+    //var layout = new (int, int, string, int)[]
+    //{
+        //(0, 0, "Fire", 1),
+        //(0, 1, "Water", 2),
+        //(0, 2, "Fire", 2),
+        //(1, 0, "Water", 1),
+        //(1, 1, "Fire", 3),    // 这个将升级为火球
+        //(1, 2, "Water", 1),
+        //(2, 0, "Fire", 1),
+        //(2, 1, "Water", 1),
+        //(2, 2, "Fire", 1),
+    //};
+    var layout = new (int, int, string, int)[]
+    {
+        (0, 0, "Fireball", 1), 
+        (0, 1, "Fire", 1),
+        (0, 2, "Fire", 1),
+        (1, 0, "Fire", 1),
+        (1, 1, "Fire", 1),
+        (1, 2, "Fire", 1),
+        (2, 0, "Water", 1),
+        (2, 1, "Water", 1),
+        (2, 2, "Water", 1),
+    };
+
+    foreach (var (row, col, type, value) in layout)
+    {
+        //gridManager.GetCell(row, col).Element = new Element(type, value);
+        gridManager.gridData.SetCellElement(row, col, new Element(type, value));
+    }
+}
 
 }

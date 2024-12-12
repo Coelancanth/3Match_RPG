@@ -43,15 +43,21 @@ public class FireballEffect : Effect
 
     public override void Execute(EffectContext context)
     {
+        Debug.Log("开始执行火球效果");
+        Debug.Log($"触发位置: ({context.SourceCell.Row}, {context.SourceCell.Column})");
+        
         var affectedCells = GetAffectedCells(context);
+        Debug.Log($"影响范围内的格子数量: {affectedCells.Count}");
         
         foreach (var cell in affectedCells)
         {
             if (cell.Element == null) continue;
-
-            // 根据元素类型应用不同效果
+            
+            Debug.Log($"处理格子 ({cell.Row}, {cell.Column}): {cell.Element.Type} Lv.{cell.Element.Value}");
             ApplyElementEffect(cell);
         }
+        
+        Debug.Log("火球效果执行完毕");
     }
 
     private void ApplyElementEffect(GridCell cell)
