@@ -1,0 +1,51 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ..., type: 3}
+  m_Name: DefaultElementConfig
+  m_EditorClassIdentifier: 
+  Elements:
+  - Type: Fire
+    DisplayName: 火焰
+    Color: {r: 1, g: 0, b: 0, a: 1}
+    MaxLevel: 5
+    SpecialUpgradeLevel: 3
+    SpecialUpgradeCount: 3
+    SpecialConfig:
+      IsSpecialElement: 1
+      EffectID: effect_fireball
+      TriggerType: 6 # Manual
+      Description: 对范围内的目标造成火焰伤害
+      Type: 1 # Active
+      ActiveConfig:
+        Range: 2
+        CoolDown: 1
+        EnergyCost: 2
+        TargetingType: Area
+        NeedTarget: true
+  
+  - Type: Water
+    DisplayName: 水
+    Color: {r: 0, g: 0, b: 1, a: 1}
+    MaxLevel: 5
+    SpecialUpgradeLevel: 3
+    SpecialUpgradeCount: 3
+    SpecialConfig:
+      IsSpecialElement: 1
+      EffectID: effect_waterwave
+      TriggerType: 1 # OnEliminate
+      Description: 消除时对周围造成水属性伤害
+      Type: 2 # Passive
+      PassiveConfig:
+        TriggerChance: 100
+        CanTriggerMultiple: true
+        MaxTriggersPerTurn: 3
+  
