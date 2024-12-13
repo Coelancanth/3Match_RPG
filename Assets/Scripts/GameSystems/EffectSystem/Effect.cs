@@ -3,24 +3,17 @@ using System.Collections.Generic;
 
 public abstract class Effect
 {
-    public string ID { get; protected set; }
-    public string Name { get; protected set; }
-    public string Description { get; protected set; }
-    public EffectType Type { get; protected set; }
-    public EffectTriggerType TriggerType { get; protected set; }
+    protected EffectConfig.EffectData config;
 
-    protected Effect(
-        string id, 
-        string name, 
-        string description,
-        EffectType type,
-        EffectTriggerType triggerType)
+    public string ID => config.ID;
+    public string Name => config.Name;
+    public string Description => config.Description;
+    public EffectType Type => config.Type;
+    public EffectTriggerType TriggerType => config.TriggerType;
+
+    protected Effect(EffectConfig.EffectData config)
     {
-        ID = id;
-        Name = name;
-        Description = description;
-        Type = type;
-        TriggerType = triggerType;
+        this.config = config;
     }
 
     // 效果的主要执行逻辑

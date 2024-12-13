@@ -19,6 +19,7 @@ public class GameController : MonoBehaviour
     private bool isWaitingForEffectTarget = false;  // 是否正在等待玩家选择效果目标
 
     [SerializeField] private ElementConfig elementConfig; // 添加这行
+    [SerializeField] private EffectConfig effectConfig; 
 
     void Start()
     {
@@ -389,9 +390,17 @@ public class GameController : MonoBehaviour
             //Debug.Log("activeElement.type: " + activeElement.Type);
             //Debug.Log("activeElement.EffectID: " + activeElement.EffectID);
             
-            EffectManager.Instance.RegisterEffect(new FireballEffect());
-            EffectManager.Instance.QueueEffect(activeElement.EffectID, context);
-            EffectManager.Instance.ProcessEffectQueue();
+            //EffectManager.Instance.RegisterEffect(new FireballEffect());
+            //EffectManager.Instance.RegisterEffect(effectConfig);
+            //EffectManager.Instance.QueueEffect(activeElement.EffectID, context);
+            //EffectManager.Instance.ProcessEffectQueue();
+            var effect = effectConfig.CreateEffect(activeElement.EffectID);
+            if (effect != null)
+            {
+                EffectManager.Instance.RegisterEffect(effect);
+                EffectManager.Instance.QueueEffect(activeElement.EffectID, context);
+                EffectManager.Instance.ProcessEffectQueue();
+            }
 
             // 清理状态
             ClearHighlightedCells();
