@@ -14,10 +14,21 @@ public class GridCellView : MonoBehaviour
     [SerializeField] private ElementVisualConfig elementVisualConfig;
     [SerializeField] private SpriteRenderer gridSpriteRenderer;    // 网格背景的渲染器
     [SerializeField] private SpriteRenderer elementSpriteRenderer; // 元素的渲染器
+    
+    [SerializeField] private SpriteRenderer rangeHighlightSprite;
 
     public TextMeshPro levelText;
 
     private Coroutine textDisplayCoroutine;
+
+    public void SetHighlight(bool active)
+    {
+        if (rangeHighlightSprite != null)
+        {
+            rangeHighlightSprite.enabled = active;
+        }
+    }
+
     public void UpdateElementInfo(GridCell cell)
     {
         if (cell.Element != null)
@@ -72,6 +83,7 @@ public class GridCellView : MonoBehaviour
     public void SubscribeToCell(GridCell cell)
     {
         cell.OnElementChanged += HandleElementChanged;
+        cell.OnHighlightChanged += HandleHighlightChanged;  // 添加高亮事件订阅
     }
 
     // Handle the element change event and update the UI
@@ -95,5 +107,18 @@ public class GridCellView : MonoBehaviour
         ElementValue = 0;
         gridSpriteRenderer.color = color;  // 设置网格背景颜色
         elementSpriteRenderer.color = Color.white;  // 重置元素颜色
+    }
+    
+    public void ShowRangeHighlight(bool active)
+    {
+        rangeHighlightSprite.enabled = active;
+    }
+
+    private void HandleHighlightChanged(GridCell cell, bool isHighlighted)
+    {
+        if (rangeHighlightSprite != null)
+        {
+            rangeHighlightSprite.enabled = isHighlighted;
+        }
     }
 }

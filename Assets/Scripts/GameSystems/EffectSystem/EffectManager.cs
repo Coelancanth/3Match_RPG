@@ -45,6 +45,14 @@ public class EffectManager
             }
         }
     }
+
+    public void TriggerEffect(string effectId, EffectContext context)
+    {
+        if (effectRegistry.TryGetValue(effectId, out Effect effect))
+        {
+            effect.Execute(context);
+        }
+    }
 }
 
 public class EffectExecutionRequest

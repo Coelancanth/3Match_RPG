@@ -12,4 +12,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d40ea988f3f393841a0be0eee372bca9, type: 3}
   m_Name: ElementVisualConfig
   m_EditorClassIdentifier: 
-  elementVisuals: []
+  elementVisuals:
+  - elementType: Fire
+    sprite: {fileID: 4323767013777760242, guid: 2464e45e28a37f545b6fcc2f9c64e950, type: 3}
+    color: {r: 0.9056604, g: 0.088287495, b: 0.088287495, a: 1}
+  - elementType: Water
+    sprite: {fileID: 4323767013777760242, guid: 2464e45e28a37f545b6fcc2f9c64e950, type: 3}
+    color: {r: 0.18385343, g: 0.42365995, b: 0.70440245, a: 1}
+  - elementType: Fireball
+    sprite: {fileID: 3483735489303829160, guid: 98839c6181beff1488c053053c173634, type: 3}
+    color: {r: 1, g: 1, b: 1, a: 1}
+  - elementType: 
+    sprite: {fileID: 0}
+    color: {r: 0, g: 0, b: 0, a: 0}

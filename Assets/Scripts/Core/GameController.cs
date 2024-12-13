@@ -16,6 +16,9 @@ public class GameController : MonoBehaviour
     private IMatchResolutionRule matchResolutionRule;
     private List<MatchingRule> matchingRules;
     
+    private GridCell pendingEffectSource = null;  // 待释放效果的源格子
+    private List<GridCell> highlightedCells = new List<GridCell>();  // 当前高亮的格子
+    private bool isWaitingForEffectTarget = false;  // 是否正在等待玩家选择效果目标
 
     void Start()
     {
@@ -186,7 +189,7 @@ void HandleMouseDrag(Vector3 start, Vector3 end)
     {
         if (startCell.IsMovable() && endCell.Element == null) // 检查拖曳条件
         {
-            // 更新元素交换逻辑
+            // ���新元素交换逻辑
             Element tempElement = startCell.Element;
             startCell.Element = endCell.Element;
             endCell.Element = tempElement;
@@ -240,7 +243,7 @@ GridCell GetClickedCell(Vector3 screenPosition)
 }
 
 
-    // 对单��格执行操作
+    // 对单格执行操作
     void PerformActionOnCell(GridCell cell)
     {
         if (cell.Element != null)
@@ -329,7 +332,7 @@ private void CreateTestLayout()
     //};
     var layout = new (int, int, string, int)[]
     {
-        (0, 0, "Fireball", 1), 
+        //(0, 0, "Fireball", 1), 
         (0, 1, "Fire", 1),
         (0, 2, "Fire", 1),
         (1, 0, "Fire", 1),
@@ -344,6 +347,84 @@ private void CreateTestLayout()
     {
         //gridManager.GetCell(row, col).Element = new Element(type, value);
         gridManager.gridData.SetCellElement(row, col, new Element(type, value));
+    }
+    gridManager.gridData.GetCell(0,0).Element = new ActiveSpecialElement("Fireball", 1, 1, "Fire", 1);
+}
+
+// 显示效果范围的方法
+public void ShowEffectRange(GridCell sourceCell, int range)
+{
+    ClearHighlightedCells();
+    pendingEffectSource = sourceCell;
+    isWaitingForEffectTarget = true;
+
+    var cells = GetCellsInRange(sourceCell, range);
+    foreach (var cell in cells)
+    {
+        cell.IsHighlighted = true;  // 使用属性触发事件
+        highlightedCells.Add(cell);
+    }
+}
+
+// 清除高亮显示
+private void ClearHighlightedCells()
+{
+    foreach (var cell in highlightedCells)
+    {
+        cell.IsHighlighted = false;  // 使用属性触发事件
+    }
+    highlightedCells.Clear();
+}
+
+// 获取指定范围内的格子
+private List<GridCell> GetCellsInRange(GridCell center, int range)
+{
+    List<GridCell> cells = new List<GridCell>();
+    int centerRow = center.Row;
+    int centerCol = center.Column;
+
+    for (int row = centerRow - range; row <= centerRow + range; row++)
+    {
+        for (int col = centerCol - range; col <= centerCol + range; col++)
+        {
+            if (row >= 0 && row < GridConstants.Rows && 
+                col >= 0 && col < GridConstants.Columns)
+            {
+                // 计算到中心的曼哈顿距离
+                int distance = Mathf.Abs(row - centerRow) + Mathf.Abs(col - centerCol);
+                if (distance <= range)
+                {
+                    //Debug.Log("GetCellsInRange: row = " + row + ", col = " + col);
+                    cells.Add(gridManager.GetCell(row, col));
+                }
+            }
+        }
+    }
+    return cells;
+}
+
+// 处理效果目标选择
+private void HandleEffectTargetSelection(GridCell targetCell)
+{
+    if (highlightedCells.Contains(targetCell))
+    {
+        // 创建效果上下文
+        var context = new EffectContext
+        {
+            GridManager = gridManager,
+            SourceCell = pendingEffectSource,
+            TargetCell = targetCell,
+            SourceElement = pendingEffectSource.Element as ActiveSpecialElement
+        };
+
+        // 触发效果
+        var activeElement = pendingEffectSource.Element as ActiveSpecialElement;
+        EffectManager.Instance.TriggerEffect(activeElement.EffectID, context);
+
+        // 清理状态
+        ClearHighlightedCells();
+        isWaitingForEffectTarget = false;
+        pendingEffectSource = null;
     }
 }
 

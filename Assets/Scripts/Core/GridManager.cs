@@ -135,6 +135,9 @@ public class GridManager : MonoBehaviour
 
 
         cell.name = $"Cell_{row}_{column}";
+
+        var cellObject = new GridCell(row, column);
+        cellObject.View = view;  // 设置View引用
     }
 
     // 根据元素类型决定颜色

@@ -37,6 +37,10 @@ public class FireballEffect : Effect
                 }
             }
         }
+        foreach (var cell in affectedCells)
+        {
+            Debug.Log($"Affected Cell: ({cell.Row}, {cell.Column})");
+        }
 
         return affectedCells;
     }
