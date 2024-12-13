@@ -105,6 +105,16 @@ public class EffectManager
             effect.Execute(context);
         }
     }
+
+    // 新增方法：根据ID获取Effect
+    public Effect GetEffect(string effectId)
+    {
+        if (effectRegistry.TryGetValue(effectId, out Effect effect))
+        {
+            return effect;
+        }
+        return null;
+    }
 }
 
 public class EffectExecutionRequest
