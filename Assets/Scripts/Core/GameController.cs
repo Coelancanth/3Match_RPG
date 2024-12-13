@@ -63,21 +63,25 @@ public class GameController : MonoBehaviour
 
     private void HandleClick(Vector3 position)
     {
+        var clickedCell = GetClickedCell(position);
+        if (clickedCell == null) return;
+
         if (isWaitingForEffectTarget)
         {
-            var clickedCell = GetClickedCell(position);
-            if (clickedCell != null && highlightedCells.Contains(clickedCell))
+            // 如果在等待效果目标选择状态，且点击了高亮区域内的格子
+            if (highlightedCells.Contains(clickedCell))
             {
                 HandleEffectTargetSelection(clickedCell);
             }
             return;
         }
-        
-        // 处理普通点击...
+
+        // 处理普通点击逻辑（如果有的话）
     }
 
     private void HandleDragComplete(Vector3 start, Vector3 end)
     {
+        // 如果正在等待效果目标选择，禁止拖拽
         if (isWaitingForEffectTarget) return;
 
         GridCell startCell = GetClickedCell(start);
@@ -293,6 +297,11 @@ public class GameController : MonoBehaviour
         
         // 筛选符合条件的相邻连通组
         var filteredGroups = matchingSystem.FilterAdjacentGroups(triggerCell, adjacentConnectedGroups);
+        if (filteredGroups.Count == 0) return;
+        if (triggerCell.Element is ActiveSpecialElement activeElement)
+        {
+            ShowEffectRange(triggerCell, activeElement.ReachRange);
+        }
         
         matchResolutionRule.ResolveMatch(filteredGroups, triggerCell);
         //foreach (var group in filteredGroups)
@@ -356,7 +365,8 @@ public class GameController : MonoBehaviour
             //gridManager.GetCell(row, col).Element = new Element(type, value);
             gridManager.gridData.SetCellElement(row, col, new Element(type, value));
         }
-        gridManager.gridData.GetCell(0,0).Element = new ActiveSpecialElement("Fireball", 1, 1, "Fire", 1);
+        // NOTE: 这里要保持一致！
+        gridManager.gridData.GetCell(0,0).Element = new ActiveSpecialElement("Fireball", 1, 1, "effect_fireball", 1);
     }
 
     // 显示效果范围的方法
@@ -417,17 +427,26 @@ public class GameController : MonoBehaviour
         if (highlightedCells.Contains(targetCell))
         {
             // 创建效果上下文
+            //Debug.Log("pendingEffectSource: " + pendingEffectSource.Element.Type);
             var context = new EffectContext
             {
                 GridManager = gridManager,
                 SourceCell = pendingEffectSource,
                 TargetCell = targetCell,
-                SourceElement = pendingEffectSource.Element as ActiveSpecialElement
+                SourceElement = pendingEffectSource.Element as ActiveSpecialElement,
             };
+            //Debug.Log("HandleEffectTargetSelection: 源格子位置 (" + context.SourceCell.Row + ", " + context.SourceCell.Column + ")");
+            //Debug.Log("HandleEffectTargetSelection: 目标格子位置 (" + context.TargetCell.Row + ", " + context.TargetCell.Column + ")");
 
             // 触发效果
+            //Debug.Log("触发效果");
             var activeElement = pendingEffectSource.Element as ActiveSpecialElement;
-            EffectManager.Instance.TriggerEffect(activeElement.EffectID, context);
+            //Debug.Log("activeElement.type: " + activeElement.Type);
+            //Debug.Log("activeElement.EffectID: " + activeElement.EffectID);
+            
+            EffectManager.Instance.RegisterEffect(new FireballEffect());
+            EffectManager.Instance.QueueEffect(activeElement.EffectID, context);
+            EffectManager.Instance.ProcessEffectQueue();
 
             // 清理状态
             ClearHighlightedCells();

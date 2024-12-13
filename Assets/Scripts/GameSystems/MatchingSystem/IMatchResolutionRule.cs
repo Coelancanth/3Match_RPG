@@ -15,12 +15,12 @@ public class BasicMatchResolutionRule : IMatchResolutionRule
         {
             //Debug.Log("ResolveMatch: triggerCell.Element is ActiveSpecialElement");
             // 通知 GameController 显示高亮范围
-            var gameController = GameObject.FindAnyObjectByType<GameController>();
-            if (gameController != null)
-            {
-                gameController.ShowEffectRange(triggerCell, activeElement.ReachRange);
-            }
-            return; // 暂时不执行消除，等待玩家选择释放位置
+            //var gameController = GameObject.FindAnyObjectByType<GameController>();
+            //if (gameController != null)
+            //{
+                //gameController.ShowEffectRange(triggerCell, activeElement.ReachRange);
+            //}
+            //return; // 暂时不执行消除，等待玩家选择释放位置
         }
 
         //foreach (var group in matchedGroups)
