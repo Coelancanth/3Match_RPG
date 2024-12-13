@@ -52,6 +52,10 @@ public class DebugConsole : MonoBehaviour
         RegisterCommand("listdice", ListAllDice);
         RegisterCommand("reloaddiceconfig", ReloadDiceConfig);
         RegisterCommand("debug",DebugMode);
+        RegisterCommand("test_effect:", args => HandleTestEffect(args[0]));
+
+        gameController = FindObjectOfType<GameController>();
+        gridManager = FindObjectOfType<GridManager>();
     }
 
     void Update()
@@ -318,5 +322,50 @@ public class DebugConsole : MonoBehaviour
         };
 
         return new Dice("TestDice", 1, faces, elementWeights, 3);
+    }
+
+    private void HandleTestEffect(string effectType)
+    {
+        switch (effectType)
+        {
+            case "fireball":
+                TestFireball();
+                break;
+            default:
+                Debug.Log($"未知的效果类型: {effectType}");
+                break;
+        }
+    }
+
+    private void TestFireball()
+    {
+        // 创建测试布局
+        var layout = new (int, int, string, int)[]
+        {
+            (0, 1, "Fire", 1),
+            (0, 2, "Fire", 1),
+            (1, 0, "Fire", 1),
+            (1, 1, "Fire", 1),
+            (1, 2, "Fire", 1),
+            (2, 0, "Water", 1),
+            (2, 1, "Water", 1),
+            (2, 2, "Water", 1),
+        };
+
+        foreach (var (row, col, type, value) in layout)
+        {
+            gridManager.gridData.SetCellElement(row, col, new Element(type, value));
+        }
+
+        // 创建火球元素
+        gridManager.gridData.GetCell(0, 0).Element = new ActiveSpecialElement(
+            "Fireball", 
+            1,  // 元素等级
+            1,  // ��果等级
+            "effect_fireball",  // 效果ID
+            1   // 影响范围
+        );
+
+        Debug.Log("火球测试布局已创建");
     }
 }

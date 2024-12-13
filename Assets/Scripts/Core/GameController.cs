@@ -18,6 +18,8 @@ public class GameController : MonoBehaviour
     private List<GridCell> highlightedCells = new List<GridCell>();  // 当前高亮的格子
     private bool isWaitingForEffectTarget = false;  // 是否正在等待玩家选择效果目标
 
+    [SerializeField] private ElementConfig elementConfig; // 添加这行
+
     void Start()
     {
         matchingSystem = new MatchingSystem(gridManager);
@@ -118,13 +120,13 @@ public class GameController : MonoBehaviour
             //Debug.Log($"Debug Mode: {(isDebugMode ? "ON" : "OFF")}");
         //}
 
-        if (Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift) && Input.GetMouseButtonDown(0)) // 检测 Shift 键
-       {
-           Vector3 mousePosition = Input.mousePosition;
-           GridCell clickedCell = GetClickedCell(mousePosition);
-           DetectMatching(clickedCell);
-            //TriggerDebugFunction(); // 调用特定函数
-        }
+        //if (Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift) && Input.GetMouseButtonDown(0)) // 检测 Shift 键
+       //{
+           //Vector3 mousePosition = Input.mousePosition;
+           //GridCell clickedCell = GetClickedCell(mousePosition);
+           //DetectMatching(clickedCell);
+            ////TriggerDebugFunction(); // 调用特定函数
+        //}
 
         if (isDebugMode && Input.GetMouseButtonDown(0)) // 调试模式下点击鼠标左键
         {
@@ -146,12 +148,6 @@ public class GameController : MonoBehaviour
             {
                 PerformActionOnCell(clickedCell);
             }
-        }
-
-        // 按 T 键触发测试
-        if (Input.GetKeyDown(KeyCode.T))
-        {
-            TestFireballEffect();
         }
     }
 
@@ -261,10 +257,10 @@ public class GameController : MonoBehaviour
             if (cell.Element != null)
             {
                 Debug.Log($"Performing action on Element: {cell.Element.Type}, Level {cell.Element.Value}");
-                //cell.Element.Upgrade(); // 示例：升级元素
-                int upgradedValue = cell.Element.Value+1;
-                cell.Element = new Element(cell.Element.Type, upgradedValue);
-                
+                // 使用 elementConfig 创建升级后的元素
+                var upgradedElement = elementConfig.CreateElement(cell.Element.Type, cell.Element.Value + 1);
+                Debug.Log($"upgradedElement: {upgradedElement.Type}, Level {upgradedElement.Value}");
+                cell.Element = upgradedElement;
             }
         }
 
@@ -316,57 +312,6 @@ public class GameController : MonoBehaviour
     private void InitializeMatchingRules()
     {
         matchingRules = MatchingRuleConfig.GetDefaultRules();
-    }
-
-    // 在 GameController 中添加测试方法
-    public void TestFireballEffect()
-    {
-        // 1. 创建测试布局
-        CreateTestLayout();
-        
-        // 2. 获取中心位置的格子（1,1）并触发匹配
-        //var centerCell = gridManager.GetCell(1, 1);
-        //DetectMatching(centerCell);
-    }
-
-    private void CreateTestLayout()
-    {
-        // 清空网格
-        //gridManager.InitializeGridData();
-        
-        // 创建测试布局
-        //var layout = new (int, int, string, int)[]
-        //{
-            //(0, 0, "Fire", 1),
-            //(0, 1, "Water", 2),
-            //(0, 2, "Fire", 2),
-            //(1, 0, "Water", 1),
-            //(1, 1, "Fire", 3),    // 这个将升级为火球
-            //(1, 2, "Water", 1),
-            //(2, 0, "Fire", 1),
-            //(2, 1, "Water", 1),
-            //(2, 2, "Fire", 1),
-        //};
-        var layout = new (int, int, string, int)[]
-        {
-            //(0, 0, "Fireball", 1), 
-            (0, 1, "Fire", 1),
-            (0, 2, "Fire", 1),
-            (1, 0, "Fire", 1),
-            (1, 1, "Fire", 1),
-            (1, 2, "Fire", 1),
-            (2, 0, "Water", 1),
-            (2, 1, "Water", 1),
-            (2, 2, "Water", 1),
-        };
-
-        foreach (var (row, col, type, value) in layout)
-        {
-            //gridManager.GetCell(row, col).Element = new Element(type, value);
-            gridManager.gridData.SetCellElement(row, col, new Element(type, value));
-        }
-        // NOTE: 这里要保持一致！
-        gridManager.gridData.GetCell(0,0).Element = new ActiveSpecialElement("Fireball", 1, 1, "effect_fireball", 1);
     }
 
     // 显示效果范围的方法

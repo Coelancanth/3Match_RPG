@@ -46,10 +46,10 @@ public class ElementConfig : ScriptableObject
     [System.Serializable]
     public class ElementData
     {
-        public string Type;               // 元素类型
+        public string Type;    // 元素类型
         public string DisplayName;        // 显示名称
-        public Color Color;               // 元素颜色
-        public Sprite Icon;               // 元素图标
+        //public Color Color;               // 元素颜色
+        //public Sprite Icon;               // 元素图标
         public int MaxLevel = 5;          // 最大等级
         public SpecialElementConfig SpecialConfig; // 特殊元素配置
         
