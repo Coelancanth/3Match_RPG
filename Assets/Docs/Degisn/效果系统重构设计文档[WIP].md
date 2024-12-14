@@ -130,3 +130,130 @@ effect_burn
    - 添加详细的日志输出
    - 提供效果执行追踪
    - 支持运行时调试
+
+
+
+
+
+# 效果系统重构设计文档 【2024-12-14】
+
+
+## 一、核心思路
+将复杂效果拆分为基础效果的组合，通过组合模式实现更灵活的效果系统。
+
+## 二、基础效果类型
+1. **ElementValueEffect（元素数值效果）**
+   - 修改元素的数值
+   - 支持不同元素类型的修正值配置
+   - 可用于增强/削弱特定元素
+
+2. **DamageEffect（伤害效果）**
+   - 对目标造成基础伤害
+   - 支持范围伤害
+   - 可配置基础伤害值
+
+3. **StatusEffect（状态效果）**
+   - 添加/移除状态效果
+   - 可配置状态类型、持续时间和强度
+   - 例如：燃烧、冰冻、麻痹等
+
+4. **ElementTransformEffect（元素转换效果）**
+   - 将一种元素转换为另一种元素
+   - 支持转换概率配置
+   - 保留原始元素的数值
+
+5. **PushPullEffect（推拉效果）**
+   - 移动格子中的元素
+   - 支持推力和拉力
+   - 可配置作用力大小
+
+6. **ChainEffect（连锁效果）**
+   - 触发其他效果
+   - 支持连锁概率和最大连锁次数
+   - 可用于实现复杂的连锁反应
+
+## 三、组合效果实现
+### CompositeEffect（组合效果）
+- 继承自基础Effect类
+- 包含多个子效果
+- 按序执行所有子效果
+- 合并所有子效果的影响范围
+
+### 示例效果配置
+1. **火球术**
+
+```yaml
+yaml
+ID: effect_fireball
+Name: 火球术
+Type: Composite
+SubEffects:
+Type: Damage
+BaseDamage: 10
+Range: 2
+Type: ElementValue
+ElementModifiers:
+ElementType: Fire
+ModifierValue: 1.5
+ElementType: Water
+ModifierValue: 0.5
+Range: 2
+```
+
+2. **闪电链**
+```yaml
+ID: effect_lightning_chain
+Name: 闪电链
+Type: Composite
+SubEffects:
+Type: Damage
+BaseDamage: 8
+Range: 1
+Type: Chain
+CustomParameters:
+ChainEffectId: effect_lightning_chain
+ChainChance: 0.7
+MaxChains: 3
+Type: Status
+CustomParameters:
+StatusType: Paralyzed
+Duration: 2
+Intensity: 1.0
+```
+
+
+## 四、配置工具
+### EffectConfigGenerator（效果配置生成器）
+- 提供静态方法快速生成各类基础效果配置
+- 支持所有基础效果类型的配置生成
+- 提供默认值和参数检查
+
+### EffectConfigGeneratorWindow（编辑器工具窗口）
+- Unity编辑器扩展工具
+- 可视化效果配置界面
+- 支持实时预览和配置保存
+- 提供常用参数的快速配置
+
+## 五、优点
+1. **模块化**
+   - 基础效果独立，易于维护
+   - 效果逻辑清晰，便于测试
+
+2. **可扩展**
+   - 易于添加新的基础效果
+   - 支持复杂效果的组合
+
+3. **配置驱动**
+   - 效果参数可配置
+   - 支持运行时修改
+
+4. **工具支持**
+   - 提供配置生成工具
+   - 降低配置复杂度
+
+## 六、后续优化方向
+1. 添加效果优先级系统
+2. 实现效果的条件触发
+3. 添加效果动画配置
+4. 优化配置工具的使用体验
+5. 添加效果预览功能

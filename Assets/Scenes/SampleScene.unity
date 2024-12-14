@@ -864,6 +864,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   gridManager: {fileID: 1943382994}
+  elementConfig: {fileID: 11400000, guid: 831e1d3c443654f468f2880bfa04e532, type: 2}
+  effectConfig: {fileID: 11400000, guid: 8949f95ff19050144984a457e6e19c7c, type: 2}
+  isDebugMode: 0
 --- !u!4 &853532767
 Transform:
   m_ObjectHideFlags: 0
@@ -1204,6 +1207,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e789e99a1e94a5348b94890197258d7c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  cellSpacing: 1.1
+  elementColors: []
   cellPrefab: {fileID: 3787849194831780860, guid: 7cb6b0f648952fd4ab7b2cc60aef8fbc, type: 3}
 --- !u!1 &2139030770
 GameObject:

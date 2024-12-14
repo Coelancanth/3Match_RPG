@@ -12,4 +12,46 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 732e1b9d947692644b60d034ea91ed29, type: 3}
   m_Name: ElementConfig
   m_EditorClassIdentifier: 
-  Elements: []
+  Elements:
+  - Type: Water
+    DisplayName: 
+    MaxLevel: 0
+    SpecialConfig:
+      IsSpecialElement: 0
+      EffectID: 
+      TriggerType: 0
+      Description: 
+      Type: 0
+      ActiveConfig:
+        Range: 0
+        CoolDown: 0
+        EnergyCost: 0
+        TargetingType: 
+        NeedTarget: 0
+      PassiveConfig:
+        TriggerChance: 0
+        CanTriggerMultiple: 0
+        MaxTriggersPerTurn: 0
+    SpecialUpgradeLevel: 0
+    SpecialUpgradeCount: 0
+  - Type: Fire
+    DisplayName: 
+    MaxLevel: 0
+    SpecialConfig:
+      IsSpecialElement: 0
+      EffectID: 
+      TriggerType: 0
+      Description: 
+      Type: 0
+      ActiveConfig:
+        Range: 0
+        CoolDown: 0
+        EnergyCost: 0
+        TargetingType: 
+        NeedTarget: 0
+      PassiveConfig:
+        TriggerChance: 0
+        CanTriggerMultiple: 0
+        MaxTriggersPerTurn: 0
+    SpecialUpgradeLevel: 0
+    SpecialUpgradeCount: 0
