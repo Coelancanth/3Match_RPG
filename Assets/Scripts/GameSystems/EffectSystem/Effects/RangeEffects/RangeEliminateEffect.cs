@@ -4,7 +4,7 @@ using System.Collections.Generic;
 /// <summary>
 /// 范围消除效果
 /// </summary>
-public class RangeEliminateEffect : Effect
+public class RangeEliminateEffect : CustomizableEffect
 {
     // 范围形状
     private readonly RangeShape shape;
@@ -16,20 +16,9 @@ public class RangeEliminateEffect : Effect
     public RangeEliminateEffect(EffectConfig.EffectData config) : base(config)
     {
         // 从配置中读取参数
-        if (config.CustomParameters.TryGetValue("shape", out object shapeObj))
-            shape = (RangeShape)shapeObj;
-        else
-            shape = RangeShape.Square; // 默认使用方形范围
-
-        if (config.CustomParameters.TryGetValue("range", out object rangeObj))
-            range = (int)rangeObj;
-        else
-            range = 1; // 默认范围为1
-
-        if (config.CustomParameters.TryGetValue("direction", out object dirObj))
-            direction = (LineDirection)dirObj;
-        else
-            direction = LineDirection.Cross; // 默认使用十字方向
+        shape = GetCustomParameter("shape", RangeShape.Square);
+        range = GetCustomParameter("range", 1);
+        direction = GetCustomParameter("direction", LineDirection.Cross);
     }
 
     public override List<GridCell> GetAffectedCells(EffectContext context)
@@ -47,16 +36,13 @@ public class RangeEliminateEffect : Effect
             RangeShape.Diamond => RangeShapeHelper.GetDiamondRange(grid, center, range),
             RangeShape.Circle => RangeShapeHelper.GetCircleRange(grid, center, range),
             RangeShape.Global => RangeShapeHelper.GetGlobalRange(grid),
-            _ => new List<GridCell>() // 默认返回空列表
+            _ => new List<GridCell>()
         };
     }
 
-    public override void Execute(EffectContext context)
+    protected override void ApplyEffect(EffectContext context, List<GridCell> affectedCells)
     {
         Debug.Log($"开始执行{config.Name}范围消除效果");
-        
-        // 获取影响范围内的所有格子
-        var affectedCells = GetAffectedCells(context);
         
         // 遍历并消除范围内的元素
         foreach (var cell in affectedCells)

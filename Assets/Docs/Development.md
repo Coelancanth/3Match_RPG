@@ -137,4 +137,139 @@ EffectManager.Instance.QueueEffect(effectId, context);
 - 效果实例池化
 - 参数缓存优化
 - 配置加载优化
-``` 
+
+### 五、效果系统实现细节
+
+#### 1. 效果类层次结构
+```
+Effect (抽象基类)
+├── CustomizableEffect (可自定义参数的效果基类)
+    ├── RangeEliminateEffect (范围消除效果)
+    └── FireballEffect (火球效果)
+```
+
+##### 1.1 Effect基类设计
+```csharp
+public abstract class Effect
+{
+    protected readonly EffectConfig.EffectData config;
+    
+    // 标准化的效果执行流程
+    public virtual void Execute(EffectContext context)
+    {
+        // 1. 前置检查
+        // 2. 获取影响范围
+        // 3. 应用效果
+        // 4. 触发连锁效果
+    }
+    
+    // 强制子类实现的核心方法
+    protected abstract void ApplyEffect(EffectContext context, List<GridCell> affectedCells);
+    public abstract List<GridCell> GetAffectedCells(EffectContext context);
+}
+```
+- 定义了效果系统的基本框架
+- 实现了标准化的执行流程
+- 提供了可扩展的抽象方法
+
+##### 1.2 CustomizableEffect类设计
+```csharp
+public abstract class CustomizableEffect : Effect 
+{
+    protected T GetCustomParameter<T>(string key, T defaultValue = default);
+}
+```
+- 为需要自定义参数的效果提供基础支持
+- 实现了类型安全的参数获取方法
+- 提供了默认值机制
+
+##### 1.3 具体效果实现示例（FireballEffect）
+```csharp
+public class FireballEffect : CustomizableEffect
+{
+    private readonly int range;
+    private readonly int baseDamage;
+    private readonly RangeShape shape;
+
+    protected override void ApplyEffect(context, affectedCells)
+    {
+        // 对范围内的元素造成伤害
+        // 根据元素类型应用不同的伤害修正
+    }
+}
+```
+- 通过构造函数读取配置参数
+- 使用RangeShapeHelper处理范围计算
+- 实现元素克制系统
+
+#### 2. 改进要点说明
+
+##### 2.1 效果执行流程标准化
+- 将效果执行拆分为清晰的步骤
+- 在基类中实现通用逻辑
+- 允许子类通过重写方法自定义行为
+
+##### 2.2 参数处理优化
+- 将自定义参数功能从基类中分离
+- 创建专门的CustomizableEffect处理参数
+- 提供类型安全的参数获取方法
+
+##### 2.3 范围计算统一化
+- 使用RangeShapeHelper统一处理范围计算
+- 支持多种范围形状
+- 便于扩展新的范围类型
+
+##### 2.4 效果组合与扩展
+- 支持效果之间的连锁触发
+- 可以通过配置定义连锁关系
+- 便于实现复杂的效果组合
+
+#### 3. 配置示例
+```yaml
+# 火球效果配置
+ID: effect_fireball
+Type: ElementChange
+CustomParameters:
+  range: 2
+  baseDamage: 3
+  shape: Circle
+ElementModifiers:
+  Fire: 1.5    # 对火元素增强
+  Water: 0.5   # 对水元素削弱
+  Plant: 2.0   # 对植物特效
+```
+
+#### 4. 使用示例
+```csharp
+// 创建效果实例
+var fireball = new FireballEffect(config);
+
+// 创建效果上下文
+var context = new EffectContext 
+{
+    GridManager = gridManager,
+    SourceCell = sourceCell
+};
+
+// 执行效果
+fireball.Execute(context);
+```
+
+#### 5. 后续优化方向
+1. 效果预览系统
+   - 实现效果范围预览
+   - 显示预期的效果结果
+   - 支持交互式调整
+
+2. 效果组合系统
+   - 支持多重效果叠加
+   - 实现效果优先级
+   - 处理效果间的互相影响
+
+3. 参数验证系统
+   - 配置数据验证
+   - 运行时参数检查
+   - 错误提示和处理
+
+
+
