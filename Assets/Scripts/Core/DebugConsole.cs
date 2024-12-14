@@ -54,6 +54,8 @@ public class DebugConsole : MonoBehaviour
         RegisterCommand("debug",DebugMode);
         RegisterCommand("test_effect:", args => HandleTestEffect(args[0]));
         RegisterCommand("test_range_eliminate", TestRangeEliminate);
+        RegisterCommand("test_element_modify", TestElementModify);
+        RegisterElementModifyCommands();
 
         gameController = FindObjectOfType<GameController>();
         gridManager = FindObjectOfType<GridManager>();
@@ -112,7 +114,7 @@ public class DebugConsole : MonoBehaviour
         inputField.ActivateInputField(); // 重新激活输入框
     }
 
-    private void RegisterCommand(string command, System.Action<string[]> action)
+    private void RegisterCommand(string command, System.Action<string[]> action, string helpText = "")
     {
         commands[command] = action;
     }
@@ -294,7 +296,7 @@ public class DebugConsole : MonoBehaviour
         
         // 创建测试骰子
         var testDice = CreateTestDice();
-        var testFace = testDice.Faces[0]; // 获取第一面
+        var testFace = testDice.Faces[0]; // 获取���一面
         
         // 在鼠标位置或中心位置生成元素
         var centerPos = new Vector2Int(GridConstants.Rows/2, GridConstants.Columns/2);
@@ -425,5 +427,185 @@ public class DebugConsole : MonoBehaviour
         // 执行效果
         effect.Execute(context);
         LogOutput($"在中心位置 ({centerPos.x}, {centerPos.y}) 执行了{shape}形状、范围为{range}的消除效果");
+    }
+
+    private void TestElementModify(string[] args)
+    {
+        // 解析参数
+        if (args.Length < 3)
+        {
+            LogOutput("用法: test_element_modify <修改类型> <范围> <参数>");
+            LogOutput("修改类型: type, level, position");
+            LogOutput("范围: 数字 (1-5)");
+            LogOutput("参数: ");
+            LogOutput("  type模式: 目标元素类型");
+            LogOutput("  level模式: 等级修改值");
+            LogOutput("  position模式: x偏移,y偏移");
+            //return;
+        }
+
+        // 创建效果配置
+        var effectConfig = new EffectConfig.EffectData
+        {
+            ID = "test_element_modify",
+            Name = "测试元素修改",
+            Type = EffectType.ElementChange,
+            CustomParameters = new Dictionary<string, object>
+            {
+                { "shape", RangeShape.Square },
+                { "range", int.Parse(args[1]) }
+            }
+        };
+
+        // 根据不同修改类型设置参数
+        switch (args[0].ToLower())
+        {
+            case "type":
+                effectConfig.CustomParameters["modifyType"] = ElementModifyEffect.ModifyType.ChangeType;
+                effectConfig.CustomParameters["targetElementType"] = args[2];
+                break;
+            //case "level":
+                //effectConfig.CustomParameters["modifyType"] = ElementModifyEffect.ModifyType.ChangeLevel;
+                //effectConfig.CustomParameters["levelModifier"] = int.Parse(args[2]);
+                //break;
+            case "position":
+                effectConfig.CustomParameters["modifyType"] = ElementModifyEffect.ModifyType.ChangePosition;
+                var offsets = args[2].Split(',');
+                effectConfig.CustomParameters["offsetX"] = int.Parse(offsets[0]);
+                effectConfig.CustomParameters["offsetY"] = int.Parse(offsets[1]);
+                break;
+        }
+
+        // 创建效果实例并执行
+        var effect = new ElementModifyEffect(effectConfig);
+        var context = new EffectContext
+        {
+            GridManager = gridManager,
+            SourceCell = gridManager.GetCell(GridConstants.Rows/2, GridConstants.Columns/2)
+        };
+        effect.Execute(context);
+    }
+
+    private void RegisterElementModifyCommands()
+    {
+        // 注册元素修改效果测试命令
+        RegisterCommand("test_modify_element", TestModifyElement, 
+            "���试元素修改效果: test_modify_element <type/value/position> <参数>\n" +
+            "示例:\n" +
+            "test_modify_element type Fire - 改变类型为火元素\n" +
+            "test_modify_element value 2 - 增加数值2点\n" +
+            "test_modify_element position 1,1 - 移动位置(1,1)");
+
+        // 注册特殊元素升级效果测试命令
+        RegisterCommand("test_upgrade_special", TestUpgradeSpecial,
+            "测试特殊元素升级: test_upgrade_special <active/passive> <参数>\n" +
+            "示例:\n" +
+            "test_upgrade_special active fireball 2 - 升级为主动特殊元素(火球效果,范围2)\n" +
+            "test_upgrade_special passive burn 0.5 - 升级为被动特殊元素(燃烧效果,50%触发)");
+    }
+
+    private void TestModifyElement(string[] args)
+    {
+        if (args.Length < 2)
+        {
+            Debug.LogError("参数不足");
+            return;
+        }
+
+        // 创建效果配置
+        var effectConfig = new EffectConfig.EffectData
+        {
+            ID = "test_modify",
+            CustomParameters = new Dictionary<string, object>()
+        };
+
+        // 根据不同修改类型设置参数
+        switch (args[0].ToLower())
+        {
+            case "type":
+                effectConfig.CustomParameters["modifyType"] = ElementModifyEffect.ModifyType.ChangeType;
+                effectConfig.CustomParameters["targetElementType"] = args[1];
+                break;
+            case "value":
+                effectConfig.CustomParameters["modifyType"] = ElementModifyEffect.ModifyType.ChangeValue;
+                effectConfig.CustomParameters["valueModifier"] = int.Parse(args[1]);
+                break;
+            case "position":
+                effectConfig.CustomParameters["modifyType"] = ElementModifyEffect.ModifyType.ChangePosition;
+                var offsets = args[1].Split(',');
+                effectConfig.CustomParameters["offsetX"] = int.Parse(offsets[0]);
+                effectConfig.CustomParameters["offsetY"] = int.Parse(offsets[1]);
+                break;
+        }
+
+        // 创建并执行效果
+        var effect = new ElementModifyEffect(effectConfig);
+        ExecuteTestEffect(effect);
+    }
+
+    private void TestUpgradeSpecial(string[] args)
+    {
+        if (args.Length < 2)
+        {
+            Debug.LogError("参数不足");
+            return;
+        }
+
+        // 创建效果配置
+        var effectConfig = new EffectConfig.EffectData
+        {
+            ID = "test_upgrade",
+            CustomParameters = new Dictionary<string, object>
+            {
+                ["modifyType"] = ElementModifyEffect.ModifyType.UpgradeToSpecial,
+                ["effectID"] = args[1]
+            }
+        };
+
+        // 根据特殊元素类型设置额外参数
+        switch (args[0].ToLower())
+        {
+            case "active":
+                if (args.Length >= 3)
+                {
+                    effectConfig.CustomParameters["range"] = int.Parse(args[2]);
+                    effectConfig.CustomParameters["needTarget"] = true;
+                }
+                var activeEffect = new ActiveSpecialElementModifyEffect(effectConfig);
+                ExecuteTestEffect(activeEffect);
+                break;
+
+            case "passive":
+                if (args.Length >= 3)
+                {
+                    effectConfig.CustomParameters["triggerChance"] = float.Parse(args[2]);
+                    effectConfig.CustomParameters["canTriggerMultiple"] = false;
+                    effectConfig.CustomParameters["maxTriggersPerTurn"] = 1;
+                }
+                var passiveEffect = new PassiveSpecialElementModifyEffect(effectConfig);
+                ExecuteTestEffect(passiveEffect);
+                break;
+        }
+    }
+
+    private void ExecuteTestEffect(Effect effect)
+    {
+        // 获取中心位置的格子
+        var selectedCell = gridManager.gridData.GetCell(GridConstants.Rows/2, GridConstants.Columns/2);
+        if (selectedCell == null)
+        {
+            Debug.LogError("请先选择一个格子");
+            return;
+        }
+
+        // 创建效果上下文
+        var context = new EffectContext
+        {
+            GridManager = gridManager,
+            SourceCell = selectedCell
+        };
+
+        // 执行效果
+        effect.Execute(context);
     }
 }
