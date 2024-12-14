@@ -50,22 +50,14 @@ public class EffectConfig : ScriptableObject
         
         // 自定义参数字典，用于存储特定效果的额外参数
         [SerializeField]
-        private List<CustomParameter> customParameterList = new List<CustomParameter>();
-        private Dictionary<string, object> _customParameters;
-        public Dictionary<string, object> CustomParameters
-        {
-            get
-            {
-                if (_customParameters == null)
-                {
-                    _customParameters = new Dictionary<string, object>();
-                    foreach (var param in customParameterList)
-                    {
-                        _customParameters[param.Key] = param.Value;
-                    }
-                }
-                return _customParameters;
-            }
+        // TODO: 之后删去，因为原则上Element并不需要CustomParameter， 这个是为了还未实现的sub-effect实现的，
+
+        public List<CustomParameter> customParameterList = new List<CustomParameter>();
+        private Dictionary<string, object> _customParameters = new Dictionary<string, object>();
+        public Dictionary<string, object> CustomParameters 
+        { 
+            get => _customParameters;
+            set => _customParameters = value;
         }
     }
 

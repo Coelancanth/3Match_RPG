@@ -53,6 +53,7 @@ public class DebugConsole : MonoBehaviour
         RegisterCommand("reloaddiceconfig", ReloadDiceConfig);
         RegisterCommand("debug",DebugMode);
         RegisterCommand("test_effect:", args => HandleTestEffect(args[0]));
+        RegisterCommand("test_range_eliminate", TestRangeEliminate);
 
         gameController = FindObjectOfType<GameController>();
         gridManager = FindObjectOfType<GridManager>();
@@ -361,11 +362,68 @@ public class DebugConsole : MonoBehaviour
         gridManager.gridData.GetCell(0, 0).Element = new ActiveSpecialElement(
             "Fireball", 
             1,  // 元素等级
-            1,  // ��果等级
+            1,  // 效果等级
             "effect_fireball",  // 效果ID
             1   // 影响范围
         );
 
         Debug.Log("火球测试布局已创建");
+    }
+
+    private void TestRangeEliminate(string[] args)
+    {
+        // 解析参数
+        if (args.Length < 2)
+        {
+            LogOutput("用法: test_range_eliminate <形状> <范围>");
+            LogOutput("形状: point, line, square, diamond, circle, global");
+            LogOutput("范围: 数字 (1-5)");
+            return;
+        }
+
+        // 解析形状参数
+        if (!System.Enum.TryParse(args[0], true, out RangeShape shape))
+        {
+            LogOutput("无效的形状参数");
+            return;
+        }
+
+        // 解析范围参数
+        if (!int.TryParse(args[1], out int range))
+        {
+            LogOutput("无效的范围参数");
+            return;
+        }
+
+        // 创建效果配置
+        var effectConfig = new EffectConfig.EffectData
+        {
+            ID = "test_range_eliminate",
+            Name = "测试范围消除",
+            Type = EffectType.ElementChange,
+            CustomParameters = new Dictionary<string, object>
+            {
+                { "shape", shape },
+                { "range", range }
+            }
+        };
+
+        // 创建效果实例
+        var effect = new RangeEliminateEffect(effectConfig);
+
+        // 获取中心位置
+        var centerPos = new Vector2Int(GridConstants.Rows/2, GridConstants.Columns/2);
+        var centerCell = gridManager.GetCell(centerPos.x, centerPos.y);
+
+        // 创建效果上下文
+        var context = new EffectContext
+        {
+            GridManager = gridManager,
+            SourceCell = centerCell
+        };
+
+        // 执行效果
+        effect.Execute(context);
+        LogOutput($"在中心位置 ({centerPos.x}, {centerPos.y}) 执行了{shape}形状、范围为{range}的消除效果");
     }
 }
