@@ -13,6 +13,7 @@ public class FireballEffect : CustomizableEffect
 
     public FireballEffect(EffectConfig.EffectData config) : base(config)
     {
+        Debug.Log($"FireballEffect: {config.Name}");
         // 从配置中读取参数
         range = GetCustomParameter("range", 2);
         baseDamage = GetCustomParameter("baseDamage", 1);
@@ -23,7 +24,7 @@ public class FireballEffect : CustomizableEffect
     {
         var grid = context.GridManager.gridData;
         var center = context.SourceCell;
-
+        Debug.Log($"center: {center.Row}, {center.Column}");
         // 使用RangeShapeHelper获取影响范围
         return shape switch
         {
@@ -37,9 +38,11 @@ public class FireballEffect : CustomizableEffect
         Debug.Log($"开始执行{config.Name}效果");
         
         foreach (var cell in affectedCells)
-        {
+        {   
             if (cell.Element == null) continue;
-            
+           {
+            Debug.Log($"cell: {cell.Row}, {cell.Column}");
+           } 
             // 使用配置中的元素修正值
             if (config.ElementModifiers.TryGetValue(cell.Element.Type, out float modifier))
             {
