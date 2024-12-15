@@ -1,6 +1,6 @@
 using UnityEngine;
 using System.Collections.Generic;
-using GameSystems.EffectSystem;
+//using GameSystems.EffectSystem;
 
 [CreateAssetMenu(fileName = "ElementConfig", menuName = "Game/Element Config")]
 public class ElementConfig : ScriptableObject
@@ -28,7 +28,7 @@ public class ElementConfig : ScriptableObject
     {
         public bool IsSpecialElement;     // 是否为特殊元素
         public string EffectID;           // 效果ID
-        public EffectTriggerType TriggerType; // 触发类型
+      //  public EffectTriggerType TriggerType; // 触发类型
         public string Description;        // 特殊元素描述
         
         // 特殊元素类型配置
@@ -76,7 +76,7 @@ public class ElementConfig : ScriptableObject
         }
     }
 
-    public Element CreateElement(string type, int level)
+    public Element CreateElement(string type, int value)
     {
         var data = GetElementData(type);
         if (data == null) return null;
@@ -84,31 +84,35 @@ public class ElementConfig : ScriptableObject
         // 检查是否应该创建特殊元素
         if (data.SpecialConfig != null && 
             data.SpecialConfig.IsSpecialElement && 
-            level >= data.SpecialUpgradeLevel)
+            value >= data.SpecialUpgradeLevel)
         {
             switch (data.SpecialConfig.Type)
             {
                 case SpecialElementType.Active:
                     return new ActiveSpecialElement(
                         type,
-                        level,
+                        value,
                         1, // 初始效果等级
                         data.SpecialConfig.EffectID,
-                        data.SpecialConfig.ActiveConfig.Range
+                        data.SpecialConfig.ActiveConfig.Range,
+                        data.SpecialConfig.ActiveConfig.CoolDown
                     );
                 case SpecialElementType.Passive:
                     return new PassiveSpecialElement(
                         type,
-                        level,
+                        value,
                         1, // 初始效果等级
-                        data.SpecialConfig.EffectID
+                        data.SpecialConfig.EffectID,
+                        data.SpecialConfig.PassiveConfig.TriggerChance,
+                        data.SpecialConfig.PassiveConfig.CanTriggerMultiple,
+                        data.SpecialConfig.PassiveConfig.MaxTriggersPerTurn
                     );
                 default:
-                    return new Element(type, level);
+                    return new BasicElement(type, value);
             }
         }
 
-        return new Element(type, level);
+        return new BasicElement(type, value);
     }
 
     public ElementData GetElementData(string type)

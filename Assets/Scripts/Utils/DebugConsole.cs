@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
-using GameSystems.EffectSystem;
+//using GameSystems.EffectSystem;
 
 // 命令接口
 public interface IConsoleCommand
@@ -72,9 +72,6 @@ public class DebugConsole : MonoBehaviour
         RegisterCommand(new ClearCommand(this));
         RegisterCommand(new DiceCommand(this));
         RegisterCommand(new DebugModeCommand(this));
-        RegisterCommand(new TestEffectCommand(this));
-        RegisterCommand(new TestRangeCommand(this));
-        RegisterCommand(new TestModifyCommand(this));
     }
 
     #endregion
@@ -182,9 +179,13 @@ public class DebugConsole : MonoBehaviour
     public GameController GetGameController() => gameController;
 
     #endregion
-}
 
-#region Command Implementations
+    public void WatchElement(Element element)
+    {
+        // 注册值变化处理器用于调试
+        element.RegisterValueChangedHandler(OnElementDebugValueChanged);
+        element.RegisterEffectTriggeredHandler(OnElementDebugEffectTriggered);
+    }
 
 // Help命令
 public class HelpCommand : ConsoleCommandBase
@@ -341,7 +342,7 @@ public class DiceCommand : ConsoleCommandBase
         {
             case "roll": RollDice(subArgs); break;
             case "clear": ClearDice(subArgs); break;
-            case "add": AddDice(subArgs); break;
+           // case "add": AddDice(subArgs); break;
             case "list": ListDice(subArgs); break;
             default:
                 Console.LogError($"未知的骰子命令: {subCommand}");
@@ -392,36 +393,6 @@ public class DiceCommand : ConsoleCommandBase
         Console.LogSuccess("已清空所有骰子");
     }
 
-    private void AddDice(string[] args)
-    {
-        var gridManager = Console.GetGridManager();
-        if (gridManager?.diceManager == null)
-        {
-            Console.LogError("DiceManager未找到");
-            return;
-        }
-
-        string diceType = args.Length > 0 ? args[0] : "Fire";
-        int level = args.Length > 1 && int.TryParse(args[1], out var l) ? l : 1;
-
-        // 创建测试骰子面
-        DiceFace[] faces = new DiceFace[6];
-        for (int i = 0; i < 6; i++)
-        {
-            faces[i] = new DiceFace(new Element(diceType, level));
-        }
-
-        Dictionary<string, int> supportedElements = new Dictionary<string, int>
-        {
-            { diceType, 70 },
-            { "Normal", 30 }
-        };
-
-        var dice = new Dice(diceType, level, faces, supportedElements, 3);
-        gridManager.diceManager.AddDice(dice);
-        
-        Console.LogSuccess($"已添加 {diceType} 骰子 (等级 {level})");
-    }
 
     private void ListDice(string[] args)
     {
@@ -467,238 +438,12 @@ public class DebugModeCommand : ConsoleCommandBase
         gameController.isDebugMode = !gameController.isDebugMode;
         Console.LogSuccess($"调试模式: {(gameController.isDebugMode ? "开启" : "关闭")}");
     }
+}   
 }
 
-// 测试效果命令
-public class TestEffectCommand : ConsoleCommandBase
-{
-    public override string Name => "test_effect";
-    public override string Description => "测试特定效果";
 
-    public TestEffectCommand(DebugConsole console) : base(console) { }
 
-    public override void Execute(string[] args)
-    {
-        if (args.Length == 0)
-        {
-            Console.LogError("请指定要测试的效果类型");
-            return;
-        }
 
-        switch (args[0].ToLower())
-        {
-            case "fireball":
-                TestFireball();
-                break;
-            default:
-                Console.LogError($"未知的效果类型: {args[0]}");
-                break;
-        }
-    }
 
-    private void TestFireball()
-    {
-        var gridManager = Console.GetGridManager();
-        if (gridManager == null)
-        {
-            Console.LogError("GridManager未找到");
-            return;
-        }
 
-        var layout = new (int, int, string, int)[]
-        {
-            (0, 1, "Fire", 1),
-            (0, 2, "Fire", 1),
-            (1, 0, "Fire", 1),
-            (1, 1, "Fire", 1),
-            (1, 2, "Fire", 1),
-            (2, 0, "Water", 1),
-            (2, 1, "Water", 1),
-            (2, 2, "Water", 1),
-        };
 
-        foreach (var (row, col, type, value) in layout)
-        {
-            gridManager.gridData.SetCellElement(row, col, new Element(type, value));
-        }
-
-        gridManager.gridData.GetCell(0, 0).Element = new ActiveSpecialElement(
-            "Fireball", 
-            1,
-            1,
-            "effect_fireball",
-            1
-        );
-
-        Console.LogSuccess("火球测试布局已创建");
-    }
-}
-
-// 测试范围命令
-public class TestRangeCommand : ConsoleCommandBase
-{
-    public override string Name => "test_range";
-    public override string Description => "测试范围效果";
-
-    public TestRangeCommand(DebugConsole console) : base(console) { }
-
-    public override void Execute(string[] args)
-    {
-        if (args.Length < 2)
-        {
-            ShowHelp();
-            return;
-        }
-
-        if (!System.Enum.TryParse(args[0], true, out RangeShape shape))
-        {
-            Console.LogError("无效的形状参数");
-            return;
-        }
-
-        if (!int.TryParse(args[1], out int range))
-        {
-            Console.LogError("无效的范围参数");
-            return;
-        }
-
-        ExecuteRangeTest(shape, range);
-    }
-
-    private void ShowHelp()
-    {
-        Console.LogOutput("用法: test_range <形状> <范围>");
-        Console.LogOutput("形状: point, line, square, diamond, circle, global");
-        Console.LogOutput("范围: 数字 (1-5)");
-    }
-
-    private void ExecuteRangeTest(RangeShape shape, int range)
-    {
-        var gridManager = Console.GetGridManager();
-        if (gridManager == null)
-        {
-            Console.LogError("GridManager未找到");
-            return;
-        }
-
-        var effectConfig = new EffectConfig.EffectData
-        {
-            ID = "test_range",
-            Name = "测试范围效果",
-            Type = EffectType.ElementChange,
-            CustomParameters = new Dictionary<string, object>
-            {
-                { "shape", shape },
-                { "range", range }
-            }
-        };
-
-        var effect = new RangeEliminateEffect(effectConfig);
-        var centerPos = new Vector2Int(GridConstants.Rows/2, GridConstants.Columns/2);
-        var centerCell = gridManager.GetCell(centerPos.x, centerPos.y);
-
-        var context = new EffectContext
-        {
-            GridManager = gridManager,
-            SourceCell = centerCell
-        };
-
-        effect.Execute(context);
-        Console.LogSuccess($"在中心位置 ({centerPos.x}, {centerPos.y}) 执行了{shape}形状、范围为{range}的效果");
-    }
-}
-
-// 测试元素修改命令
-public class TestModifyCommand : ConsoleCommandBase
-{
-    public override string Name => "test_modify";
-    public override string Description => "测试元素修改";
-
-    public TestModifyCommand(DebugConsole console) : base(console) { }
-
-    public override void Execute(string[] args)
-    {
-        if (args.Length < 3)
-        {
-            ShowHelp();
-            return;
-        }
-
-        var effectConfig = CreateEffectConfig(args);
-        if (effectConfig != null)
-        {
-            ExecuteModifyTest(effectConfig);
-        }
-    }
-
-    private void ShowHelp()
-    {
-        Console.LogOutput("用法: test_modify <修改类型> <范围> <参数>");
-        Console.LogOutput("修改类型: type, level, position");
-        Console.LogOutput("范围: 数字 (1-5)");
-        Console.LogOutput("参数:");
-        Console.LogOutput("  type模式: 目标元素类型");
-        Console.LogOutput("  level模式: 等级修改值");
-        Console.LogOutput("  position模式: x偏移,y偏移");
-    }
-
-    private EffectConfig.EffectData CreateEffectConfig(string[] args)
-    {
-        var config = new EffectConfig.EffectData
-        {
-            ID = "test_modify",
-            Name = "测试元素修改",
-            Type = EffectType.ElementChange,
-            CustomParameters = new Dictionary<string, object>
-            {
-                { "shape", RangeShape.Square },
-                { "range", int.Parse(args[1]) }
-            }
-        };
-
-        switch (args[0].ToLower())
-        {
-            case "type":
-                config.CustomParameters["modifyType"] = ElementModifyEffect.ModifyType.ChangeType;
-                config.CustomParameters["targetElementType"] = args[2];
-                break;
-            //case "level":
-                //config.CustomParameters["modifyType"] = ElementModifyEffect.ModifyType.ChangeLevel;
-                //config.CustomParameters["levelModifier"] = int.Parse(args[2]);
-                //break;
-            case "position":
-                config.CustomParameters["modifyType"] = ElementModifyEffect.ModifyType.ChangePosition;
-                var offsets = args[2].Split(',');
-                config.CustomParameters["offsetX"] = int.Parse(offsets[0]);
-                config.CustomParameters["offsetY"] = int.Parse(offsets[1]);
-                break;
-            default:
-                Console.LogError($"未知的修改类型: {args[0]}");
-                return null;
-        }
-
-        return config;
-    }
-
-    private void ExecuteModifyTest(EffectConfig.EffectData config)
-    {
-        var gridManager = Console.GetGridManager();
-        if (gridManager == null)
-        {
-            Console.LogError("GridManager未找到");
-            return;
-        }
-
-        var effect = new ElementModifyEffect(config);
-        var context = new EffectContext
-        {
-            GridManager = gridManager,
-            SourceCell = gridManager.GetCell(GridConstants.Rows/2, GridConstants.Columns/2)
-        };
-
-        effect.Execute(context);
-        Console.LogSuccess("元素修改效果已执行");
-    }
-}
-
-#endregion

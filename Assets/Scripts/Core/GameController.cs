@@ -69,15 +69,15 @@ public class GameController : MonoBehaviour
         var clickedCell = GetClickedCell(position);
         if (clickedCell == null) return;
 
-        if (isWaitingForEffectTarget)
-        {
-            // 如果在等待效果目标选择状态，且点击了高亮区域内的格子
-            if (highlightedCells.Contains(clickedCell))
-            {
-                HandleEffectTargetSelection(clickedCell);
-            }
-            return;
-        }
+        //if (isWaitingForEffectTarget)
+        //{
+            //// 如果在等待效果目标选择状态，且点击了高亮区域内的格子
+            //if (highlightedCells.Contains(clickedCell))
+            //{
+                //HandleEffectTargetSelection(clickedCell);
+            //}
+            //return;
+        //}
 
         // 处理普通点击逻辑（如果有的话）
     }
@@ -180,7 +180,7 @@ public class GameController : MonoBehaviour
         }
 
         // 更新元素
-        cell.Element = newType != null ? new Element(newType, 1) : null;
+        //cell.Element = newType != null ? new Element(newType, 1) : null;
 
 
     }
@@ -297,7 +297,7 @@ public class GameController : MonoBehaviour
         if (filteredGroups.Count == 0) return;
         if (triggerCell.Element is ActiveSpecialElement activeElement)
         {
-            ShowEffectRange(triggerCell, activeElement.ReachRange);
+            //ShowEffectRange(triggerCell, activeElement.ReachRange);
         }
         
         matchResolutionRule.ResolveMatch(filteredGroups, triggerCell);
@@ -368,31 +368,31 @@ public class GameController : MonoBehaviour
     }
 
     // 处理效果目标选择
-    private void HandleEffectTargetSelection(GridCell targetCell)
-    {
-        if (highlightedCells.Contains(targetCell))
-        {
-            var context = new EffectContext
-            {
-                GridManager = gridManager,
-                SourceCell = pendingEffectSource,
-                TargetCell = targetCell,
-                SourceElement = pendingEffectSource.Element as ActiveSpecialElement,
-            };
+    //private void HandleEffectTargetSelection(GridCell targetCell)
+    //{
+        //if (highlightedCells.Contains(targetCell))
+        //{
+            //var context = new EffectContext
+            //{
+                //GridManager = gridManager,
+                //SourceCell = pendingEffectSource,
+                //TargetCell = targetCell,
+                //SourceElement = pendingEffectSource.Element as ActiveSpecialElement,
+            //};
 
-            var activeElement = pendingEffectSource.Element as ActiveSpecialElement;
-            var effect = effectConfig.CreateEffect(activeElement.EffectID);
-            if (effect != null)
-            {
-                EffectManager.Instance.RegisterEffect(effect);
-                EffectManager.Instance.QueueEffect(activeElement.EffectID, context);
-                EffectManager.Instance.ProcessEffectQueue();
-            }
+            //var activeElement = pendingEffectSource.Element as ActiveSpecialElement;
+            //var effect = effectConfig.CreateEffect(activeElement.EffectID);
+            //if (effect != null)
+            //{
+                //EffectManager.Instance.RegisterEffect(effect);
+                //EffectManager.Instance.QueueEffect(activeElement.EffectID, context);
+                //EffectManager.Instance.ProcessEffectQueue();
+            //}
 
-            ClearHighlightedCells();
-            isWaitingForEffectTarget = false;
-            pendingEffectSource = null;
-        }
-    }
+            //ClearHighlightedCells();
+            //isWaitingForEffectTarget = false;
+            //pendingEffectSource = null;
+        //}
+    //}
 
 }

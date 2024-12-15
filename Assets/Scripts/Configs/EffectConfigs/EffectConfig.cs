@@ -1,6 +1,6 @@
 using UnityEngine;
 using System.Collections.Generic;
-using GameSystems.EffectSystem;
+//using GameSystems.EffectSystem;
 
 [CreateAssetMenu(fileName = "EffectConfig", menuName = "Game/Effect Config")]
 public class EffectConfig : ScriptableObject
@@ -18,8 +18,8 @@ public class EffectConfig : ScriptableObject
         public string ID;                    // 效果唯一标识
         public string Name;                  // 效果名称
         public string Description;           // 效果描述
-        public EffectType Type;             // 效果类型
-        public EffectTriggerType TriggerType; // 触发类型
+        //public EffectType Type;             // 效果类型
+        //public EffectTriggerType TriggerType; // 触发类型
         
         // 基础参数
         public int Range = 1;               // 影响范围
@@ -162,24 +162,24 @@ public class EffectConfig : ScriptableObject
     }
 
     // 修改返回类型为IEffect
-    public IEffect CreateEffect(string effectId)
-    {
-        var data = GetEffectData(effectId);
-        if (data == null)
-        {
-            Debug.LogError($"未找到效果配置: {effectId}");
-            return null;
-        }
+    //public IEffect CreateEffect(string effectId)
+    //{
+        //var data = GetEffectData(effectId);
+        //if (data == null)
+        //{
+            //Debug.LogError($"未找到效果配置: {effectId}");
+            //return null;
+        //}
 
-        // 验证效果配置
-        if (!data.Validate(out string error))
-        {
-            Debug.LogError($"效果配置无效: {error}");
-            return null;
-        }
+        //// 验证效果配置
+        //if (!data.Validate(out string error))
+        //{
+            //Debug.LogError($"效果配置无效: {error}");
+            //return null;
+        //}
 
-        return EffectFactory.CreateEffect(data);
-    }
+        //return EffectFactory.CreateEffect(data);
+    //}
 
     public EffectData GetEffectData(string effectId)
     {

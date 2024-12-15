@@ -1,83 +1,172 @@
 using System;
 using UnityEngine;
 
-// 基础元素类
-public class Element
+/// <summary>
+/// 元素基类，定义所有元素的基本属性和行为
+/// </summary>
+public abstract class Element
 {
+    // 基础属性
     public string Type { get; protected set; }
     public int Value { get; protected set; }
+    public string DisplayName { get; protected set; }
+    
+    // 事件处理器，而不是事件
+    protected Action<Element> ValueChangedHandler;
+    protected Action<Element> EffectTriggeredHandler;
 
-    public Element(string type, int value)
+    protected Element(string type, int value)
     {
         Type = type;
         Value = value;
     }
+
+    // 虚方法，允许子类重写
+    public virtual bool CanTriggerEffect() => false;
+    public virtual void TriggerEffect() { }
+    
+    public virtual void Upgrade()
+    {
+        Value++;
+        ValueChangedHandler?.Invoke(this);
+    }
+    
+    public virtual void Eliminate(){}
+
+    // 事件注册方法
+    public void RegisterValueChangedHandler(Action<Element> handler)
+    {
+        ValueChangedHandler += handler;
+    }
+
+    public void RegisterEffectTriggeredHandler(Action<Element> handler)
+    {
+        EffectTriggeredHandler += handler;
+    }
+
+    public override string ToString()
+    {
+        return $"{Type}(Value:{Value})";
+    }
 }
 
-// 特殊元素基类
-public class SpecialElement : Element
+/// <summary>
+/// 基础元素，游戏中最常见的元素类型
+/// </summary>
+public class BasicElement : Element
 {
-    public int Level { get; protected set; }
+    public BasicElement(string type, int value) : base(type, value) { }
+}
 
-    public SpecialElement(string type, int value, int level) : base(type, value)
+/// <summary>
+/// 特殊元素基类，为主动和被动特殊元素提供共同的基础功能
+/// </summary>
+public abstract class SpecialElement : Element
+{
+    public string EffectID { get; protected set; }
+    public int EffectLevel { get; protected set; }
+    
+    protected SpecialElement(string type, int value, int effectLevel, string effectId) 
+        : base(type, value)
     {
-        Level = level;
+        EffectID = effectId;
+        EffectLevel = effectLevel;
     }
 
-    public void Upgrade()
+    public virtual void UpgradeEffect()
     {
-        Level++;
+        EffectLevel++;
+        ValueChangedHandler?.Invoke(this);
     }
 }
 
-// 主动特殊元素
+/// <summary>
+/// 主动特殊元素，需要玩家主动触发效果
+/// </summary>
 public class ActiveSpecialElement : SpecialElement
 {
-    public string EffectID { get; private set; }
-    public int ReachRange { get; private set; }
+    public int Range { get; private set; }
+    public bool IsOnCooldown { get; private set; }
+    public int CooldownTurns { get; private set; }
 
-    public ActiveSpecialElement(string type, int value, int level, string effectID, int reachRange) 
-        : base(type, value, level)
+    public ActiveSpecialElement(
+        string type, 
+        int value,
+        int effectLevel,
+        string effectId,
+        int range,
+        int cooldownTurns = 0
+    ) : base(type, value, effectLevel, effectId)
     {
-        EffectID = effectID;
-        ReachRange = reachRange;
+        Range = range;
+        CooldownTurns = cooldownTurns;
+        IsOnCooldown = false;
     }
 
-    public void TriggerEffect()
+    public override bool CanTriggerEffect()
     {
-        // 触发主动技能
-        Debug.Log($"Triggering active effect: {EffectID}");
+        return !IsOnCooldown;
     }
-    
-    public bool IsTriggered()
+
+    public override void TriggerEffect()
     {
-        TriggerEffect();
-        return true;
+        if (!CanTriggerEffect()) return;
+        
+        IsOnCooldown = true;
+        EffectTriggeredHandler?.Invoke(this);
     }
-    
+
+    public void ResetCooldown()
+    {
+        IsOnCooldown = false;
+    }
 }
 
-// 被动特殊元素
+/// <summary>
+/// 被动特殊元素，自动触发效果
+/// </summary>
 public class PassiveSpecialElement : SpecialElement
 {
-    public string EffectID { get; private set; }
+    public float TriggerChance { get; private set; }
+    public bool CanTriggerMultiple { get; private set; }
+    public int TriggersThisTurn { get; private set; }
+    public int MaxTriggersPerTurn { get; private set; }
 
-    public PassiveSpecialElement(string type, int value, int level, string effectID)
-        : base(type, value, level)
+    public PassiveSpecialElement(
+        string type,
+        int value,
+        int effectLevel,
+        string effectId,
+        float triggerChance = 100f,
+        bool canTriggerMultiple = false,
+        int maxTriggersPerTurn = 1
+    ) : base(type, value, effectLevel, effectId)
     {
-        EffectID = effectID;
+        TriggerChance = triggerChance;
+        CanTriggerMultiple = canTriggerMultiple;
+        MaxTriggersPerTurn = maxTriggersPerTurn;
+        TriggersThisTurn = 0;
     }
 
-    public void TriggerEffect()
+    public override bool CanTriggerEffect()
     {
+        if (!CanTriggerMultiple && TriggersThisTurn >= MaxTriggersPerTurn)
+            return false;
 
+        return UnityEngine.Random.Range(0f, 100f) <= TriggerChance;
     }
 
-    public bool IsTriggered()
+    public override void TriggerEffect()
     {
-        TriggerEffect();
-        return true;
+        if (!CanTriggerEffect()) return;
+
+        TriggersThisTurn++;
+        EffectTriggeredHandler?.Invoke(this);
     }
 
+    public void ResetTriggerCount()
+    {
+        TriggersThisTurn = 0;
+    }
 }
 

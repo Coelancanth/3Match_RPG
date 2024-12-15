@@ -8,28 +8,35 @@ public class GridCell
     private Element _element;
     public Element Element
     {
-        get {return _element;}
+        get { return _element; }
         set 
         {
-            if (_element !=value)
+            if (_element != value)
             {
-                var oldElement = _element;
+                // 取消旧元素的事件注册
+                if (_element != null)
+                {
+                    _element.RegisterValueChangedHandler(null);
+                    _element.RegisterEffectTriggeredHandler(null);
+                }
+
                 _element = value;
-                
-                // 触发元素变化事件
+
+                // 为新元素注册事件处理
+                if (_element != null)
+                {
+                    // 注册值变化处理器
+                    _element.RegisterValueChangedHandler(OnElementValueChanged);
+                    // 注册效果触发处理器
+                }
+
+                // 触发格子的元素变化事件
                 OnElementChanged?.Invoke(this);
-                
-                // 检查并触发效果相关事件
-                HandleElementEffectEvents(oldElement, value);
             }
         }
     }
 
     // 修改事件类型
-    public event Action<GridCell, IEffect> OnEffectTriggered;
-    public event Action<GridCell, IEffect> OnEffectPrepare;
-    public event Action<GridCell, IEffect> OnEffectComplete;
-    public event Action<GridCell, IEffect> OnAffectedByEffect;
 
     public event Action<GridCell> OnElementChanged;
     public string EnemyType { get; set; }
@@ -52,43 +59,8 @@ public class GridCell
     public event Action<GridCell, bool> OnHighlightChanged;
 
     // 新增方法：处理元素效果事件
-    private void HandleElementEffectEvents(Element oldElement, Element newElement)
-    {
-        if (oldElement is SpecialElement oldSpecial)
-        {
-            if (oldSpecial is ActiveSpecialElement oldActive)
-            {
-                var effect = EffectManager.Instance.GetEffect(oldActive.EffectID);
-                if (effect != null)
-                {
-                    OnEffectComplete?.Invoke(this, effect);
-                }
-            }
-        }
-
-        if (newElement is SpecialElement newSpecial)
-        {
-            if (newSpecial is ActiveSpecialElement newActive)
-            {
-                var effect = EffectManager.Instance.GetEffect(newActive.EffectID);
-                if (effect != null)
-                {
-                    OnEffectPrepare?.Invoke(this, effect);
-                }
-            }
-        }
-    }
 
     // 修改方法参数类型
-    public void TriggerEffect(IEffect effect)
-    {
-        OnEffectTriggered?.Invoke(this, effect);
-    }
-
-    public void ReceiveEffect(IEffect effect)
-    {
-        OnAffectedByEffect?.Invoke(this, effect);
-    }
 
     public GridCell(int row, int column)
     {
@@ -104,4 +76,16 @@ public class GridCell
     return Element != null; // 示例逻辑：有元素时可移动
     }
 
+    // 处理元素值变化
+    private void OnElementValueChanged(Element element)
+    {
+        // 更新显示
+        View?.UpdateElementInfo(this);
+        
+        // 检查是否需要触发特殊效果
+        if (element is SpecialElement specialElement && element.Value >= 5)
+        {
+            specialElement.TriggerEffect();
+        }
+    }
 }
