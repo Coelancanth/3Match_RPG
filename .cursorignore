@@ -2,7 +2,6 @@
 *.meta
 *.unity
 *.txt
-*.asset
 *.hlsl
 *.cginc
 *.cg

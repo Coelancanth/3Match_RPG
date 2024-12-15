@@ -281,7 +281,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ElementType: 
   ElementValue: 0
-  elementVisualConfig: {fileID: 11400000, guid: a1bb431a3abc052459bc9f8af497f0e7, type: 2}
+  elementVisualConfig: {fileID: 11400000, guid: fd1f531d5a7ecac4eabedefad6bcc220, type: 2}
   gridSpriteRenderer: {fileID: 4686066629309588216}
   elementSpriteRenderer: {fileID: 4553191007003778007}
   rangeHighlightSprite: {fileID: 692158266071511321}
