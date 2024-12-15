@@ -1,26 +1,45 @@
 using UnityEngine;
 using System.Collections.Generic;
-
+using GameSystems.EffectSystem;
 /// <summary>
 /// 火球效果：造成范围伤害，并对不同元素有不同影响
 /// </summary>
-public class FireballEffect : CustomizableEffect
+public class FireballEffect : ICustomizableEffect
 {
+    // 配置数据
+    private readonly EffectConfig.EffectData config;
+    
     // 效果参数
-    private readonly int range;           // 影响范围
-    private readonly int baseDamage;      // 基础伤害值
-    private readonly RangeShape shape;    // 范围形状
+    private readonly int range;           
+    private readonly int baseDamage;      
+    private readonly RangeShape shape;    
 
-    public FireballEffect(EffectConfig.EffectData config) : base(config)
+    // 实现接口属性
+    public string ID => config.ID;
+    public string Name => config.Name;
+    public string Description => config.Description;
+    public EffectType Type => config.Type;
+    public EffectTriggerType TriggerType => config.TriggerType;
+
+    public FireballEffect(EffectConfig.EffectData config)
     {
-        Debug.Log($"FireballEffect: {config.Name}");
+        this.config = config;
         // 从配置中读取参数
         range = GetCustomParameter("range", 2);
         baseDamage = GetCustomParameter("baseDamage", 1);
         shape = GetCustomParameter("shape", RangeShape.Circle);
     }
 
-    public override List<GridCell> GetAffectedCells(EffectContext context)
+    // 实现接口方法
+    public void Execute(EffectContext context)
+    {
+        if (!CanExecute(context)) return;
+        
+        var affectedCells = GetAffectedCells(context);
+        ApplyEffect(context, affectedCells);
+    }
+
+    public List<GridCell> GetAffectedCells(EffectContext context)
     {
         var grid = context.GridManager.gridData;
         var center = context.SourceCell;
@@ -33,7 +52,31 @@ public class FireballEffect : CustomizableEffect
         };
     }
 
-    protected override void ApplyEffect(EffectContext context, List<GridCell> affectedCells)
+    public bool CanExecute(EffectContext context)
+    {
+        return context != null && context.GridManager != null;
+    }
+
+    public T GetCustomParameter<T>(string key, T defaultValue = default)
+    {
+        if (config.CustomParameters != null && 
+            config.CustomParameters.TryGetValue(key, out object value))
+        {
+            try
+            {
+                return (T)value;
+            }
+            catch (System.Exception e)
+            {
+                Debug.LogError($"参数转换失败: {key}, {e.Message}");
+                return defaultValue;
+            }
+        }
+        return defaultValue;
+    }
+
+    // 私有方法
+    private void ApplyEffect(EffectContext context, List<GridCell> affectedCells)
     {
         Debug.Log($"开始执行{config.Name}效果");
         

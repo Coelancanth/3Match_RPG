@@ -25,15 +25,11 @@ public class GridCell
         }
     }
 
-    // 添加新的效果相关事件
-    // 当效果被触发时
-    public event Action<GridCell, Effect> OnEffectTriggered;
-    // 当效果准备开始时
-    public event Action<GridCell, Effect> OnEffectPrepare;
-    // 当效果结束时
-    public event Action<GridCell, Effect> OnEffectComplete;
-    // 当格子被效果影响时
-    public event Action<GridCell, Effect> OnAffectedByEffect;
+    // 修改事件类型
+    public event Action<GridCell, IEffect> OnEffectTriggered;
+    public event Action<GridCell, IEffect> OnEffectPrepare;
+    public event Action<GridCell, IEffect> OnEffectComplete;
+    public event Action<GridCell, IEffect> OnAffectedByEffect;
 
     public event Action<GridCell> OnElementChanged;
     public string EnemyType { get; set; }
@@ -58,13 +54,10 @@ public class GridCell
     // 新增方法：处理元素效果事件
     private void HandleElementEffectEvents(Element oldElement, Element newElement)
     {
-        // 处理旧元素的效果清理
         if (oldElement is SpecialElement oldSpecial)
         {
-            // 触发效果结束事件
             if (oldSpecial is ActiveSpecialElement oldActive)
             {
-                // 获取对应的Effect并触发结束事件
                 var effect = EffectManager.Instance.GetEffect(oldActive.EffectID);
                 if (effect != null)
                 {
@@ -73,10 +66,8 @@ public class GridCell
             }
         }
 
-        // 处理新元素的效果初始化
         if (newElement is SpecialElement newSpecial)
         {
-            // 触发效果准备事件
             if (newSpecial is ActiveSpecialElement newActive)
             {
                 var effect = EffectManager.Instance.GetEffect(newActive.EffectID);
@@ -88,14 +79,13 @@ public class GridCell
         }
     }
 
-    // 新增方法：触发效果
-    public void TriggerEffect(Effect effect)
+    // 修改方法参数类型
+    public void TriggerEffect(IEffect effect)
     {
         OnEffectTriggered?.Invoke(this, effect);
     }
 
-    // 新增方法：接收效果影响
-    public void ReceiveEffect(Effect effect)
+    public void ReceiveEffect(IEffect effect)
     {
         OnAffectedByEffect?.Invoke(this, effect);
     }

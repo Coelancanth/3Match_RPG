@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections.Generic;
+using GameSystems.EffectSystem;
 
 [CreateAssetMenu(fileName = "ElementConfig", menuName = "Game/Element Config")]
 public class ElementConfig : ScriptableObject

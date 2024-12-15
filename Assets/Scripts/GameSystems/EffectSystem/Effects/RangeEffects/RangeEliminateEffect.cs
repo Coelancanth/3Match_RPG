@@ -1,27 +1,45 @@
 using UnityEngine;
 using System.Collections.Generic;
-
+using GameSystems.EffectSystem;
 /// <summary>
 /// 范围消除效果
 /// </summary>
-public class RangeEliminateEffect : CustomizableEffect
+public class RangeEliminateEffect : ICustomizableEffect
 {
-    // 范围形状
+    // 配置数据
+    private readonly EffectConfig.EffectData config;
+    
+    // 范围参数
     private readonly RangeShape shape;
-    // 范围大小
     private readonly int range;
-    // 方向（用于直线效果）
     private readonly LineDirection direction;
 
-    public RangeEliminateEffect(EffectConfig.EffectData config) : base(config)
+    // 实现接口属性
+    public string ID => config.ID;
+    public string Name => config.Name;
+    public string Description => config.Description;
+    public EffectType Type => config.Type;
+    public EffectTriggerType TriggerType => config.TriggerType;
+
+    public RangeEliminateEffect(EffectConfig.EffectData config)
     {
+        this.config = config;
         // 从配置中读取参数
         shape = GetCustomParameter("shape", RangeShape.Square);
         range = GetCustomParameter("range", 1);
         direction = GetCustomParameter("direction", LineDirection.Cross);
     }
 
-    public override List<GridCell> GetAffectedCells(EffectContext context)
+    // 实现接口方法
+    public void Execute(EffectContext context)
+    {
+        if (!CanExecute(context)) return;
+        
+        var affectedCells = GetAffectedCells(context);
+        ApplyEffect(context, affectedCells);
+    }
+
+    public List<GridCell> GetAffectedCells(EffectContext context)
     {
         // 获取网格数据
         var grid = context.GridManager.gridData;
@@ -40,7 +58,31 @@ public class RangeEliminateEffect : CustomizableEffect
         };
     }
 
-    protected override void ApplyEffect(EffectContext context, List<GridCell> affectedCells)
+    public bool CanExecute(EffectContext context)
+    {
+        return context != null && context.GridManager != null && context.SourceCell != null;
+    }
+
+    public T GetCustomParameter<T>(string key, T defaultValue = default)
+    {
+        if (config.CustomParameters != null && 
+            config.CustomParameters.TryGetValue(key, out object value))
+        {
+            try
+            {
+                return (T)value;
+            }
+            catch (System.Exception e)
+            {
+                Debug.LogError($"参数转换失败: {key}, {e.Message}");
+                return defaultValue;
+            }
+        }
+        return defaultValue;
+    }
+
+    // 私有方法
+    private void ApplyEffect(EffectContext context, List<GridCell> affectedCells)
     {
         Debug.Log($"开始执行{config.Name}范围消除效果");
         

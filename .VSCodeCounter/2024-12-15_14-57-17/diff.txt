@@ -1,0 +1,80 @@
+Date : 2024-12-15 14:57:17
+Directory : c:\Users\Coel\Desktop\My project\My project\Assets\Docs\Idea
+Total : 34 files,  -2627 codes, -444 comments, -500 blanks, all -3571 lines
+
+Languages
++----------+------------+------------+------------+------------+------------+
+| language | files      | code       | comment    | blank      | total      |
++----------+------------+------------+------------+------------+------------+
+| Markdown |          1 |        111 |          0 |         51 |        162 |
+| C#       |         33 |     -2,738 |       -444 |       -551 |     -3,733 |
++----------+------------+------------+------------+------------+------------+
+
+Directories
++------------------------------------------------------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| path                                                                                                                                           | files      | code       | comment    | blank      | total      |
++------------------------------------------------------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| .                                                                                                                                              |         34 |     -2,627 |       -444 |       -500 |     -3,571 |
+| . (Files)                                                                                                                                      |          1 |        111 |          0 |         51 |        162 |
+| ..                                                                                                                                             |         33 |     -2,738 |       -444 |       -551 |     -3,733 |
+| ..\..                                                                                                                                          |         33 |     -2,738 |       -444 |       -551 |     -3,733 |
+| ..\..\Scripts                                                                                                                                  |         33 |     -2,738 |       -444 |       -551 |     -3,733 |
+| ..\..\Scripts\Core                                                                                                                             |          4 |     -1,173 |       -116 |       -263 |     -1,552 |
+| ..\..\Scripts\GameSystems                                                                                                                      |         28 |     -1,504 |       -328 |       -279 |     -2,111 |
+| ..\..\Scripts\GameSystems\DiceSystem                                                                                                           |          5 |       -139 |       -115 |        -42 |       -296 |
+| ..\..\Scripts\GameSystems\EffectSystem                                                                                                         |         13 |       -780 |       -109 |       -125 |     -1,014 |
+| ..\..\Scripts\GameSystems\EffectSystem (Files)                                                                                                 |          4 |       -203 |        -24 |        -33 |       -260 |
+| ..\..\Scripts\GameSystems\EffectSystem\Configs                                                                                                 |          1 |        -88 |         -7 |        -15 |       -110 |
+| ..\..\Scripts\GameSystems\EffectSystem\Effects                                                                                                 |          8 |       -489 |        -78 |        -77 |       -644 |
+| ..\..\Scripts\GameSystems\EffectSystem\Effects (Files)                                                                                         |          2 |        -82 |        -13 |        -11 |       -106 |
+| ..\..\Scripts\GameSystems\EffectSystem\Effects\ElementModify                                                                                   |          4 |       -221 |        -31 |        -33 |       -285 |
+| ..\..\Scripts\GameSystems\EffectSystem\Effects\RangeEffects                                                                                    |          2 |       -186 |        -34 |        -33 |       -253 |
+| ..\..\Scripts\GameSystems\ElementSystem                                                                                                        |          3 |       -206 |        -11 |        -41 |       -258 |
+| ..\..\Scripts\GameSystems\ElementSystem (Files)                                                                                                |          1 |        -61 |         -5 |        -18 |        -84 |
+| ..\..\Scripts\GameSystems\ElementSystem\Configs                                                                                                |          2 |       -145 |         -6 |        -23 |       -174 |
+| ..\..\Scripts\GameSystems\GridSystem                                                                                                           |          4 |       -264 |        -25 |        -47 |       -336 |
+| ..\..\Scripts\GameSystems\MatchingSystem                                                                                                       |          3 |       -115 |        -68 |        -24 |       -207 |
+| ..\..\Scripts\Utils                                                                                                                            |          1 |        -61 |          0 |         -9 |        -70 |
+| ..\..\Scripts\Utils\Input                                                                                                                      |          1 |        -61 |          0 |         -9 |        -70 |
++------------------------------------------------------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+
+Files
++------------------------------------------------------------------------------------------------------------------------------------------------+----------+------------+------------+------------+------------+
+| filename                                                                                                                                       | language | code       | comment    | blank      | total      |
++------------------------------------------------------------------------------------------------------------------------------------------------+----------+------------+------------+------------+------------+
+| c:\Users\Coel\Desktop\My project\My project\Assets\Docs\Idea\元素效果设计.md                                                                         | Markdown |        111 |          0 |         51 |        162 |
+| c:\Users\Coel\Desktop\My project\My project\Assets\Scripts\Core\DebugConsole.cs                                                                | C#       |       -574 |        -18 |       -112 |       -704 |
+| c:\Users\Coel\Desktop\My project\My project\Assets\Scripts\Core\GameController.cs                                                              | C#       |       -276 |        -61 |        -76 |       -413 |
+| c:\Users\Coel\Desktop\My project\My project\Assets\Scripts\Core\GridManager.cs                                                                 | C#       |       -176 |        -20 |        -47 |       -243 |
+| c:\Users\Coel\Desktop\My project\My project\Assets\Scripts\Core\MatchingSystem.cs                                                              | C#       |       -147 |        -17 |        -28 |       -192 |
+| c:\Users\Coel\Desktop\My project\My project\Assets\Scripts\GameSystems\DiceSystem\Dice.cs                                                      | C#       |        -84 |        -98 |        -24 |       -206 |
+| c:\Users\Coel\Desktop\My project\My project\Assets\Scripts\GameSystems\DiceSystem\DiceFace.cs                                                  | C#       |        -11 |          0 |         -3 |        -14 |
+| c:\Users\Coel\Desktop\My project\My project\Assets\Scripts\GameSystems\DiceSystem\DiceManager.cs                                               | C#       |        -36 |        -17 |         -9 |        -62 |
+| c:\Users\Coel\Desktop\My project\My project\Assets\Scripts\GameSystems\DiceSystem\SkillDice.cs                                                 | C#       |         -4 |          0 |         -3 |         -7 |
+| c:\Users\Coel\Desktop\My project\My project\Assets\Scripts\GameSystems\DiceSystem\SpecialDice.cs                                               | C#       |         -4 |          0 |         -3 |         -7 |
+| c:\Users\Coel\Desktop\My project\My project\Assets\Scripts\GameSystems\EffectSystem\Configs\EffectConfig.cs                                    | C#       |        -88 |         -7 |        -15 |       -110 |
+| c:\Users\Coel\Desktop\My project\My project\Assets\Scripts\GameSystems\EffectSystem\Effect.cs                                                  | C#       |        -57 |        -17 |        -14 |        -88 |
+| c:\Users\Coel\Desktop\My project\My project\Assets\Scripts\GameSystems\EffectSystem\EffectContext.cs                                           | C#       |        -16 |          0 |         -2 |        -18 |
+| c:\Users\Coel\Desktop\My project\My project\Assets\Scripts\GameSystems\EffectSystem\EffectFactory.cs                                           | C#       |        -19 |         -2 |         -3 |        -24 |
+| c:\Users\Coel\Desktop\My project\My project\Assets\Scripts\GameSystems\EffectSystem\EffectManager.cs                                           | C#       |       -111 |         -5 |        -14 |       -130 |
+| c:\Users\Coel\Desktop\My project\My project\Assets\Scripts\GameSystems\EffectSystem\Effects\CustomizableEffect.cs                              | C#       |        -24 |         -4 |         -2 |        -30 |
+| c:\Users\Coel\Desktop\My project\My project\Assets\Scripts\GameSystems\EffectSystem\Effects\ElementModify\ActiveSpecialElementModifyEffect.cs  | C#       |        -25 |         -4 |         -4 |        -33 |
+| c:\Users\Coel\Desktop\My project\My project\Assets\Scripts\GameSystems\EffectSystem\Effects\ElementModify\ElementModifyEffect.cs               | C#       |       -130 |        -14 |        -20 |       -164 |
+| c:\Users\Coel\Desktop\My project\My project\Assets\Scripts\GameSystems\EffectSystem\Effects\ElementModify\PassiveSpecialElementModifyEffect.cs | C#       |        -29 |         -4 |         -5 |        -38 |
+| c:\Users\Coel\Desktop\My project\My project\Assets\Scripts\GameSystems\EffectSystem\Effects\ElementModify\SpecialElementModifyEffect.cs        | C#       |        -37 |         -9 |         -4 |        -50 |
+| c:\Users\Coel\Desktop\My project\My project\Assets\Scripts\GameSystems\EffectSystem\Effects\FireballEffect.cs                                  | C#       |        -58 |         -9 |         -9 |        -76 |
+| c:\Users\Coel\Desktop\My project\My project\Assets\Scripts\GameSystems\EffectSystem\Effects\RangeEffects\RangeEliminateEffect.cs               | C#       |        -50 |        -11 |         -7 |        -68 |
+| c:\Users\Coel\Desktop\My project\My project\Assets\Scripts\GameSystems\EffectSystem\Effects\RangeEffects\RangeShapeHelper.cs                   | C#       |       -136 |        -23 |        -26 |       -185 |
+| c:\Users\Coel\Desktop\My project\My project\Assets\Scripts\GameSystems\ElementSystem\Configs\ElementConfig.cs                                  | C#       |       -109 |         -6 |        -16 |       -131 |
+| c:\Users\Coel\Desktop\My project\My project\Assets\Scripts\GameSystems\ElementSystem\Configs\ElementVisualConfig.cs                            | C#       |        -36 |          0 |         -7 |        -43 |
+| c:\Users\Coel\Desktop\My project\My project\Assets\Scripts\GameSystems\ElementSystem\Element.cs                                                | C#       |        -61 |         -5 |        -18 |        -84 |
+| c:\Users\Coel\Desktop\My project\My project\Assets\Scripts\GameSystems\GridSystem\Grid.cs                                                      | C#       |        -71 |         -5 |        -11 |        -87 |
+| c:\Users\Coel\Desktop\My project\My project\Assets\Scripts\GameSystems\GridSystem\GridCell.cs                                                  | C#       |        -88 |        -15 |        -15 |       -118 |
+| c:\Users\Coel\Desktop\My project\My project\Assets\Scripts\GameSystems\GridSystem\GridCellView.cs                                              | C#       |        -99 |         -5 |        -20 |       -124 |
+| c:\Users\Coel\Desktop\My project\My project\Assets\Scripts\GameSystems\GridSystem\GridConstants.cs                                             | C#       |         -6 |          0 |         -1 |         -7 |
+| c:\Users\Coel\Desktop\My project\My project\Assets\Scripts\GameSystems\MatchingSystem\IMatchResolutionRule.cs                                  | C#       |        -69 |        -45 |        -15 |       -129 |
+| c:\Users\Coel\Desktop\My project\My project\Assets\Scripts\GameSystems\MatchingSystem\MatchingRule.cs                                          | C#       |        -20 |          0 |         -3 |        -23 |
+| c:\Users\Coel\Desktop\My project\My project\Assets\Scripts\GameSystems\MatchingSystem\MatchingRuleConfig.cs                                    | C#       |        -26 |        -23 |         -6 |        -55 |
+| c:\Users\Coel\Desktop\My project\My project\Assets\Scripts\Utils\Input\ClickAndDragDetector.cs                                                 | C#       |        -61 |          0 |         -9 |        -70 |
+| Total                                                                                                                                          |          |     -2,627 |       -444 |       -500 |     -3,571 |
++------------------------------------------------------------------------------------------------------------------------------------------------+----------+------------+------------+------------+------------+

@@ -1,0 +1,36 @@
+"filename", "language", "Markdown", "C#", "comment", "blank", "total"
+"c:\Users\Coel\Desktop\My project\My project\Assets\Docs\Idea\元素效果设计.md", "Markdown", 111, 0, 0, 51, 162
+"c:\Users\Coel\Desktop\My project\My project\Assets\Scripts\Core\DebugConsole.cs", "C#", 0, -574, -18, -112, -704
+"c:\Users\Coel\Desktop\My project\My project\Assets\Scripts\Core\GameController.cs", "C#", 0, -276, -61, -76, -413
+"c:\Users\Coel\Desktop\My project\My project\Assets\Scripts\Core\GridManager.cs", "C#", 0, -176, -20, -47, -243
+"c:\Users\Coel\Desktop\My project\My project\Assets\Scripts\Core\MatchingSystem.cs", "C#", 0, -147, -17, -28, -192
+"c:\Users\Coel\Desktop\My project\My project\Assets\Scripts\GameSystems\DiceSystem\Dice.cs", "C#", 0, -84, -98, -24, -206
+"c:\Users\Coel\Desktop\My project\My project\Assets\Scripts\GameSystems\DiceSystem\DiceFace.cs", "C#", 0, -11, 0, -3, -14
+"c:\Users\Coel\Desktop\My project\My project\Assets\Scripts\GameSystems\DiceSystem\DiceManager.cs", "C#", 0, -36, -17, -9, -62
+"c:\Users\Coel\Desktop\My project\My project\Assets\Scripts\GameSystems\DiceSystem\SkillDice.cs", "C#", 0, -4, 0, -3, -7
+"c:\Users\Coel\Desktop\My project\My project\Assets\Scripts\GameSystems\DiceSystem\SpecialDice.cs", "C#", 0, -4, 0, -3, -7
+"c:\Users\Coel\Desktop\My project\My project\Assets\Scripts\GameSystems\EffectSystem\Configs\EffectConfig.cs", "C#", 0, -88, -7, -15, -110
+"c:\Users\Coel\Desktop\My project\My project\Assets\Scripts\GameSystems\EffectSystem\Effect.cs", "C#", 0, -57, -17, -14, -88
+"c:\Users\Coel\Desktop\My project\My project\Assets\Scripts\GameSystems\EffectSystem\EffectContext.cs", "C#", 0, -16, 0, -2, -18
+"c:\Users\Coel\Desktop\My project\My project\Assets\Scripts\GameSystems\EffectSystem\EffectFactory.cs", "C#", 0, -19, -2, -3, -24
+"c:\Users\Coel\Desktop\My project\My project\Assets\Scripts\GameSystems\EffectSystem\EffectManager.cs", "C#", 0, -111, -5, -14, -130
+"c:\Users\Coel\Desktop\My project\My project\Assets\Scripts\GameSystems\EffectSystem\Effects\CustomizableEffect.cs", "C#", 0, -24, -4, -2, -30
+"c:\Users\Coel\Desktop\My project\My project\Assets\Scripts\GameSystems\EffectSystem\Effects\ElementModify\ActiveSpecialElementModifyEffect.cs", "C#", 0, -25, -4, -4, -33
+"c:\Users\Coel\Desktop\My project\My project\Assets\Scripts\GameSystems\EffectSystem\Effects\ElementModify\ElementModifyEffect.cs", "C#", 0, -130, -14, -20, -164
+"c:\Users\Coel\Desktop\My project\My project\Assets\Scripts\GameSystems\EffectSystem\Effects\ElementModify\PassiveSpecialElementModifyEffect.cs", "C#", 0, -29, -4, -5, -38
+"c:\Users\Coel\Desktop\My project\My project\Assets\Scripts\GameSystems\EffectSystem\Effects\ElementModify\SpecialElementModifyEffect.cs", "C#", 0, -37, -9, -4, -50
+"c:\Users\Coel\Desktop\My project\My project\Assets\Scripts\GameSystems\EffectSystem\Effects\FireballEffect.cs", "C#", 0, -58, -9, -9, -76
+"c:\Users\Coel\Desktop\My project\My project\Assets\Scripts\GameSystems\EffectSystem\Effects\RangeEffects\RangeEliminateEffect.cs", "C#", 0, -50, -11, -7, -68
+"c:\Users\Coel\Desktop\My project\My project\Assets\Scripts\GameSystems\EffectSystem\Effects\RangeEffects\RangeShapeHelper.cs", "C#", 0, -136, -23, -26, -185
+"c:\Users\Coel\Desktop\My project\My project\Assets\Scripts\GameSystems\ElementSystem\Configs\ElementConfig.cs", "C#", 0, -109, -6, -16, -131
+"c:\Users\Coel\Desktop\My project\My project\Assets\Scripts\GameSystems\ElementSystem\Configs\ElementVisualConfig.cs", "C#", 0, -36, 0, -7, -43
+"c:\Users\Coel\Desktop\My project\My project\Assets\Scripts\GameSystems\ElementSystem\Element.cs", "C#", 0, -61, -5, -18, -84
+"c:\Users\Coel\Desktop\My project\My project\Assets\Scripts\GameSystems\GridSystem\Grid.cs", "C#", 0, -71, -5, -11, -87
+"c:\Users\Coel\Desktop\My project\My project\Assets\Scripts\GameSystems\GridSystem\GridCell.cs", "C#", 0, -88, -15, -15, -118
+"c:\Users\Coel\Desktop\My project\My project\Assets\Scripts\GameSystems\GridSystem\GridCellView.cs", "C#", 0, -99, -5, -20, -124
+"c:\Users\Coel\Desktop\My project\My project\Assets\Scripts\GameSystems\GridSystem\GridConstants.cs", "C#", 0, -6, 0, -1, -7
+"c:\Users\Coel\Desktop\My project\My project\Assets\Scripts\GameSystems\MatchingSystem\IMatchResolutionRule.cs", "C#", 0, -69, -45, -15, -129
+"c:\Users\Coel\Desktop\My project\My project\Assets\Scripts\GameSystems\MatchingSystem\MatchingRule.cs", "C#", 0, -20, 0, -3, -23
+"c:\Users\Coel\Desktop\My project\My project\Assets\Scripts\GameSystems\MatchingSystem\MatchingRuleConfig.cs", "C#", 0, -26, -23, -6, -55
+"c:\Users\Coel\Desktop\My project\My project\Assets\Scripts\Utils\Input\ClickAndDragDetector.cs", "C#", 0, -61, 0, -9, -70
+"Total", "-", 111, -2738, -444, -500, -3571

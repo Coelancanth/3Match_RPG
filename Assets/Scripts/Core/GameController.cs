@@ -372,8 +372,6 @@ public class GameController : MonoBehaviour
     {
         if (highlightedCells.Contains(targetCell))
         {
-            // 创建效果上下文
-            //Debug.Log("pendingEffectSource: " + pendingEffectSource.Element.Type);
             var context = new EffectContext
             {
                 GridManager = gridManager,
@@ -381,19 +379,8 @@ public class GameController : MonoBehaviour
                 TargetCell = targetCell,
                 SourceElement = pendingEffectSource.Element as ActiveSpecialElement,
             };
-            //Debug.Log("HandleEffectTargetSelection: 源格子位置 (" + context.SourceCell.Row + ", " + context.SourceCell.Column + ")");
-            //Debug.Log("HandleEffectTargetSelection: 目标格子位置 (" + context.TargetCell.Row + ", " + context.TargetCell.Column + ")");
 
-            // 触发效果
-            //Debug.Log("触发效果");
             var activeElement = pendingEffectSource.Element as ActiveSpecialElement;
-            //Debug.Log("activeElement.type: " + activeElement.Type);
-            //Debug.Log("activeElement.EffectID: " + activeElement.EffectID);
-            
-            //EffectManager.Instance.RegisterEffect(new FireballEffect());
-            //EffectManager.Instance.RegisterEffect(effectConfig);
-            //EffectManager.Instance.QueueEffect(activeElement.EffectID, context);
-            //EffectManager.Instance.ProcessEffectQueue();
             var effect = effectConfig.CreateEffect(activeElement.EffectID);
             if (effect != null)
             {
@@ -402,7 +389,6 @@ public class GameController : MonoBehaviour
                 EffectManager.Instance.ProcessEffectQueue();
             }
 
-            // 清理状态
             ClearHighlightedCells();
             isWaitingForEffectTarget = false;
             pendingEffectSource = null;

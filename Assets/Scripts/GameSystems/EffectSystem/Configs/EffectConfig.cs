@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections.Generic;
+using GameSystems.EffectSystem;
 
 [CreateAssetMenu(fileName = "EffectConfig", menuName = "Game/Effect Config")]
 public class EffectConfig : ScriptableObject
@@ -25,9 +26,8 @@ public class EffectConfig : ScriptableObject
         public int BaseDamage = 0;          // 基础伤害
         
         [SerializeField]
-        private List<ElementModifier> elementModifierList = new List<ElementModifier>(); // 可序列化的列表
+        private List<ElementModifier> elementModifierList = new List<ElementModifier>();
         
-        // 运行时使用的字典
         private Dictionary<string, float> _elementModifiers;
         public Dictionary<string, float> ElementModifiers
         {
@@ -45,13 +45,9 @@ public class EffectConfig : ScriptableObject
             }
         }
         
-        // 连锁效果配置
-        public List<string> ChainEffectIDs = new List<string>();  // 可能触发的连锁效果ID
+        public List<string> ChainEffectIDs = new List<string>();
         
-        // 自定义参数字典，用于存储特定效果的额外参数
         [SerializeField]
-        // TODO: 之后删去，因为原则上Element并不需要CustomParameter， 这个是为了还未实现的sub-effect实现的，
-
         public List<CustomParameter> customParameterList = new List<CustomParameter>();
         private Dictionary<string, object> _customParameters = new Dictionary<string, object>();
         public Dictionary<string, object> CustomParameters 
@@ -65,10 +61,10 @@ public class EffectConfig : ScriptableObject
     public class CustomParameter
     {
         public string Key;
-        public string Value; // 使用string类型存储，需要时再转换
+        public string Value;
     }
 
-    public List<EffectData> Effects;  // 所有效果配置列表
+    public List<EffectData> Effects;
     private Dictionary<string, EffectData> effectDataMap;
 
     private void OnEnable()
@@ -85,8 +81,8 @@ public class EffectConfig : ScriptableObject
         }
     }
 
-    // 创建效果实例的方法
-    public Effect CreateEffect(string effectId)
+    // 修改返回类型为IEffect
+    public IEffect CreateEffect(string effectId)
     {
         var data = GetEffectData(effectId);
         if (data == null)
@@ -98,7 +94,6 @@ public class EffectConfig : ScriptableObject
         return EffectFactory.CreateEffect(data);
     }
 
-    // 获取效果数据的方法
     public EffectData GetEffectData(string effectId)
     {
         if (effectDataMap == null)

@@ -1,11 +1,14 @@
 using UnityEngine;
 using System.Collections.Generic;
-
+using GameSystems.EffectSystem;
 /// <summary>
 /// 元素修改效果：可以改变范围内元素的类型、等级或位置
 /// </summary>
-public class ElementModifyEffect : CustomizableEffect
+public class ElementModifyEffect : ICustomizableEffect
 {
+    // 配置数据
+    protected readonly EffectConfig.EffectData config;
+    
     // 修改类型枚举
     public enum ModifyType
     {
@@ -19,14 +22,22 @@ public class ElementModifyEffect : CustomizableEffect
     protected readonly ModifyType modifyType;     // 修改类型
     private readonly RangeShape shape;          // 范围形状
     private readonly int range;                 // 影响范围
-    private readonly string targetElementType;  // 目标元素类型（用于ChangeType）
-    private readonly int valueModifier;         // 数值修改值（用于ChangeValue）
-    private readonly Vector2Int positionOffset; // 位置偏移（用于ChangePosition）
-    protected readonly ElementConfig elementConfig; // 添加字段
+    private readonly string targetElementType;  // 目标元素类型
+    private readonly int valueModifier;         // 数值修改值
+    private readonly Vector2Int positionOffset; // 位置偏移
+    protected readonly ElementConfig elementConfig;
 
+    // 实现接口属性
+    public string ID => config.ID;
+    public string Name => config.Name;
+    public string Description => config.Description;
+    public EffectType Type => config.Type;
+    public EffectTriggerType TriggerType => config.TriggerType;
 
-    public ElementModifyEffect(EffectConfig.EffectData config) : base(config)
+    public ElementModifyEffect(EffectConfig.EffectData config)
     {
+        this.config = config;
+        
         // 加载ElementConfig并添加错误检查
         elementConfig = Resources.Load<ElementConfig>("Configs/ElementConfig");
         if (elementConfig == null)
@@ -48,12 +59,20 @@ public class ElementModifyEffect : CustomizableEffect
         positionOffset = new Vector2Int(offsetX, offsetY);
     }
 
-    public override List<GridCell> GetAffectedCells(EffectContext context)
+    // 实现接口方法
+    public void Execute(EffectContext context)
+    {
+        if (!CanExecute(context)) return;
+        
+        var affectedCells = GetAffectedCells(context);
+        ApplyEffect(context, affectedCells);
+    }
+
+    public List<GridCell> GetAffectedCells(EffectContext context)
     {
         var grid = context.GridManager.gridData;
         var center = context.SourceCell;
 
-        // 使用RangeShapeHelper获取影响范围
         return shape switch
         {
             RangeShape.Square => RangeShapeHelper.GetSquareRange(grid, center, range),
@@ -63,7 +82,31 @@ public class ElementModifyEffect : CustomizableEffect
         };
     }
 
-    protected override void ApplyEffect(EffectContext context, List<GridCell> affectedCells)
+    public bool CanExecute(EffectContext context)
+    {
+        return context != null && context.GridManager != null && elementConfig != null;
+    }
+
+    public T GetCustomParameter<T>(string key, T defaultValue = default)
+    {
+        if (config.CustomParameters != null && 
+            config.CustomParameters.TryGetValue(key, out object value))
+        {
+            try
+            {
+                return (T)value;
+            }
+            catch (System.Exception e)
+            {
+                Debug.LogError($"参数转换失败: {key}, {e.Message}");
+                return defaultValue;
+            }
+        }
+        return defaultValue;
+    }
+
+    // 私有方法
+    protected virtual void ApplyEffect(EffectContext context, List<GridCell> affectedCells)
     {
         Debug.Log($"开始执行{config.Name}效果，修改类型：{modifyType}");
 
